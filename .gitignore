@@ -1,0 +1,12 @@
+.idea/
+.gradle/
+build/
+out/
+target/
+*.iml
+*.iws
+*.ipr
+local.properties
+.DS_Store
+Thumbs.db
+.gemini/tmp/
