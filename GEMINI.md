@@ -63,3 +63,22 @@ Este projeto utiliza o [Itzamna](https://github.com/KrystianYCSilva/itzamna) com
 
 Regras completas: `.itzamna/constitution.md`
 Slash commands: veja `commands/` neste diretorio
+
+
+---
+
+## Itzamna notice added by automation
+
+Detectei que este arquivo foi gerado pelo CLI "Gemini CLI". Adicionando uma referencia curta ao protocolo Itzamna para integrar agentes.
+
+**Antes de executar qualquer tarefa nao-trivial:**
+1. Leia `.itzamna/kernel.md` (classificacao e roteamento)
+2. Leia `.itzamna/memory.md` (estado atual do projeto)
+3. Leia `.context/` (project.md, tech.md, rules.md)
+
+**Ao finalizar tarefas significativas:**
+- Atualize `.itzamna/memory.md` (estado atual, append-only)
+- Para features/releases/hotfixes: proponha update em `MEMORY.md` (root, long-term)
+
+Regras completas: `.itzamna/constitution.md`
+Slash commands: veja `commands/` neste diretorio

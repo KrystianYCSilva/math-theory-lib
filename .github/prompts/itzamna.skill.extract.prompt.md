@@ -1,0 +1,3 @@
+---
+agent: itzamna.skill.extract
+---
