@@ -1,57 +1,43 @@
-# IntelliJ IDEA
+# IDE / Editor
 .idea/
+.idea_modules/
+.vscode/
 *.iml
 *.iws
 *.ipr
-.idea_modules/
 
-# Gradle
+# Gradle / Kotlin build caches
 .gradle/
-/build/
-**/build/
-
-# Gradle wrapper
-/gradle/wrapper/gradle-wrapper.jar
-/gradle/wrapper/gradle-wrapper.properties
-
-# Output folders
-/out/
-/target/
-
-# Local configuration
-local.properties
-
-# Kotlin/Native
-/.konan/
+.gradle-user-home/
+.kotlin/
+.konan/
 .kotlincache/
+kotlin-js-store/
 
-# Kotlin Multiplatform caches and outputs
-/.gradle/
-*/out/
-
-# VS Code
-/.vscode/
-
-# Node (JS target)
-/node_modules/
-
-# Test results
-/test-results/
+# Build outputs
+build/
+**/build/
+out/
+**/out/
+target/
+test-results/
 **/test-results/
+coverage/
+**/coverage/
 
-# Dokka (generated docs)
-/docs/dokka/
+# Node (Kotlin/JS)
+node_modules/
 
-# Logs and temp
+# Generated docs
+docs/dokka/
+
+# Local machine files
+local.properties
 *.log
 *.tmp
-
-# macOS/Windows
+*.class
 .DS_Store
 Thumbs.db
 
-# Generated classes
-*.class
-
-# Keep project-specific dotfiles (e.g., .itzamna, .context) tracked - do NOT ignore them here
+# Keep project-specific dotfiles tracked
 .gemini/tmp/
