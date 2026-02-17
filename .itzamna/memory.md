@@ -232,3 +232,92 @@ Início da Implementação (Sprint 1: Kernel). Setup do projeto (scaffolding de 
 ### Observacoes
 
 - Build continua exibindo fallback do Kotlin daemon no ambiente atual (permissao em pasta local do daemon), mas tasks concluidas com sucesso.
+
+---
+
+## Atualizacao de Sessao (2026-02-17 - Roadmap Sprints 11-20)
+
+- **Nivel:** Deliberado
+- **Resumo:** Finalizacao dos sprints restantes do `docs/ROADMAP.md` com implementacao de `construction` avancado, `ordinal`, `cardinal`, `descriptive`, `combinatorics`, `forcing` e extensao de `examples`, incluindo testes e validacao integrada.
+
+### Entregas Realizadas
+
+- **Construction (Sprints 11-14):**
+  - `VonNeumannNatural`, `VonNeumannPeanoSystem`, aritmetica/ordem e isomorfismo `NaturalNumber <-> VonNeumannNatural`.
+  - `ConstructedInteger` e `ConstructedRational` com classes de equivalencia, aritmetica, ordem, embeddings e isomorfismos.
+  - Cadeia `NaturalNumber -> MathInteger -> MathRational` operacional.
+
+- **Ordinal (Sprints 15-16):**
+  - Novo modulo `ordinal/` com `CantorNormalForm`, `Ordinal` (`Finite` + `CNF`), `OrdinalArithmetic` e `TransfiniteRecursion`.
+  - Leis centrais verificadas em teste: nao comutatividade (`omega + 1 != 1 + omega`), `omega * 2 = omega + omega`, e `omega^2 > omega * n`.
+
+- **Cardinal (Sprints 17-18):**
+  - Novo modulo `cardinal/` com `CardinalArithmetic`, `CantorDiagonal`, `Countability` (bijecoes construtivas `N<->Z` e `N<->Q`) e `ContinuumHypothesis` expositivo.
+  - Roundtrips de enumerabilidade e verificacoes de diagonal implementados e testados.
+
+- **Descriptive + Combinatorics (Sprint 19):**
+  - Novo modulo `descriptive/`: `FiniteTopology` (`interior`, `closure`, `boundary`) e `BorelHierarchy`.
+  - Novo modulo `combinatorics/`: `GaleStewartGame` (minimax finito), `Ramsey` (`findMonochromaticClique`, `searchBounds`) e `PartitionCalculus` (`allPartitions`, `bellNumber`, `erdosRadoArrow`).
+
+- **Forcing + Examples (Sprint 20):**
+  - Novo modulo `forcing/`: `Poset`, `GenericFilterBuilder`, `ForcingExtension`, `IndependenceDemo`.
+  - `examples/` ampliado com `ParadoxDemos` (Russell/Burali-Forti/Cantor) e `NumberConstructionDemo` (`N -> Z -> Q`).
+
+- **Hotfix de consistencia detectado em integracao:**
+  - Corrigido `NaturalNumber` (`kernel/src/commonMain/kotlin/mathsets/kernel/NaturalNumber.kt`) para aceitar valores `>= 0` no `init` (condicao estava invertida e afetava inicializacao em testes de `set`).
+
+### Validacao Executada
+
+- Validacoes incrementais por modulo:
+  - `:ordinal:jvmTest :ordinal:compileKotlinJs`
+  - `:cardinal:jvmTest :cardinal:compileKotlinJs`
+  - `:descriptive:jvmTest :descriptive:compileKotlinJs`
+  - `:combinatorics:jvmTest :combinatorics:compileKotlinJs`
+  - `:forcing:jvmTest :forcing:compileKotlinJs`
+  - `:examples:jvmTest :examples:compileKotlinJs`
+
+- Validacao integrada final (JVM + JS):
+  - `:kernel:jvmTest :logic:jvmTest :set:jvmTest :relation:jvmTest :function:jvmTest :construction:jvmTest :ordinal:jvmTest :cardinal:jvmTest :descriptive:jvmTest :combinatorics:jvmTest :forcing:jvmTest :examples:jvmTest`
+  - `:kernel:compileKotlinJs :logic:compileKotlinJs :set:compileKotlinJs :relation:compileKotlinJs :function:compileKotlinJs :construction:compileKotlinJs :ordinal:compileKotlinJs :cardinal:compileKotlinJs :descriptive:compileKotlinJs :combinatorics:compileKotlinJs :forcing:compileKotlinJs :examples:compileKotlinJs`
+
+### Estado Atual
+
+- Roadmap 1.0.0-draft implementado de Sprint 1 ate Sprint 20 no repositorio.
+- `check` global completo com Native permanece dependente de toolchain/ambiente local, mas os alvos JVM + JS do conjunto ativo foram validados com sucesso.
+
+---
+
+## Atualizacao de Sessao (2026-02-17 - Expansion da Construction para R, Irracionais, Imaginarios e Complexos)
+
+- **Nivel:** Deliberado
+- **Resumo:** Extensao da camada `construction` para cobrir os novos tipos analiticos do kernel com embeddings/isomorfismos e testes.
+
+### Entregas Realizadas
+
+- **Construction Real:**
+  - `construction/src/commonMain/kotlin/mathsets/construction/real/ConstructedReal.kt`
+  - Inclui: representacao por aproximantes racionais + valor de kernel, aritmetica ordenada, embeddings de `Natural/Integer/Rational/Real` e verificador de isomorfismo.
+
+- **Construction Irrational:**
+  - `construction/src/commonMain/kotlin/mathsets/construction/irrational/ConstructedIrrational.kt`
+  - Inclui: simbolo + aproximacao real construida, mapeamento de constantes (`pi`, `e`, `sqrt2`, etc.) e roundtrip com `IrrationalNumber`.
+
+- **Construction Imaginary/Complex:**
+  - `construction/src/commonMain/kotlin/mathsets/construction/complex/ConstructedImaginary.kt`
+  - `construction/src/commonMain/kotlin/mathsets/construction/complex/ConstructedComplex.kt`
+  - Inclui: operacoes algébricas, embedding imaginario -> complexo e isomorfismos com `ImaginaryNumber`/`ComplexNumber`.
+
+- **Testes adicionados:**
+  - `construction/src/commonTest/kotlin/mathsets/construction/real/ConstructedRealTest.kt`
+  - `construction/src/commonTest/kotlin/mathsets/construction/irrational/ConstructedIrrationalTest.kt`
+  - `construction/src/commonTest/kotlin/mathsets/construction/complex/ConstructedImaginaryTest.kt`
+  - `construction/src/commonTest/kotlin/mathsets/construction/complex/ConstructedComplexTest.kt`
+
+### Validacao Executada
+
+- `:construction:jvmTest :construction:compileKotlinJs`
+- `:examples:jvmTest :examples:compileKotlinJs`
+
+### Observacoes
+
+- A expansão segue o mesmo padrão dual-mode já usado em `ConstructedInteger` e `ConstructedRational`: testemunho construtivo + canal explícito para verificação no kernel.

@@ -90,3 +90,49 @@
 
 - **Decisao de modelagem:**
   - `ComplexArithmetic` permanece sem comparacao total por consistencia matematica (complexos nao tem ordem total canonica).
+
+### Finalizacao Roadmap (Sprints 11-20)
+- **Data:** 2026-02-17
+- **Escopo:** `construction`, `ordinal`, `cardinal`, `descriptive`, `combinatorics`, `forcing`, `examples`
+- **Mudancas principais:**
+  - **Sprints 11-14 (Construcao da torre numerica):**
+    - Implementados `VonNeumannNatural`, `VonNeumannPeanoSystem`, aritmetica/ordem/isomorfismo de naturais construidos.
+    - Implementados `ConstructedInteger` e `ConstructedRational` com classes de equivalencia, embeddings e isomorfismos com kernel.
+    - Cadeia operacional `NaturalNumber -> MathInteger -> MathRational`.
+  - **Sprints 15-16 (Ordinais):**
+    - Novo modulo `ordinal/` com `CantorNormalForm`, `Ordinal` (`Finite`, `CNF`), `OrdinalArithmetic`, `TransfiniteRecursion`.
+    - Casos classicos cobertos: `omega + 1 != 1 + omega`, `omega * 2 = omega + omega`, `omega^2 > omega * n`.
+  - **Sprints 17-18 (Cardinais):**
+    - Novo modulo `cardinal/` com `CardinalArithmetic`, `CantorDiagonal`, `Countability` (bijecoes construtivas `N<->Z` e `N<->Q`) e modulo expositivo de CH.
+  - **Sprint 19 (Descritiva + Combinatoria):**
+    - Novo modulo `descriptive/`: `FiniteTopology` e `BorelHierarchy`.
+    - Novo modulo `combinatorics/`: `GaleStewartGame`, `Ramsey`, `PartitionCalculus` (`allPartitions`, `bellNumber`, `erdosRadoArrow`).
+  - **Sprint 20 (Forcing + Demos):**
+    - Novo modulo `forcing/`: `Poset`, `GenericFilterBuilder`, `ForcingExtension`, `IndependenceDemo`.
+    - `examples/` expandido com `ParadoxDemos` (Russell/Burali-Forti/Cantor) e `NumberConstructionDemo`.
+  - **Correcao de integracao:**
+    - Ajustado `NaturalNumber` para validar corretamente apenas valores negativos no `init` (bug de condicao invertida identificado na suite de `set`).
+
+- **Validacao executada:**
+  - Suites por modulo (JVM + JS) para `ordinal`, `cardinal`, `descriptive`, `combinatorics`, `forcing`, `examples`.
+  - Validacao integrada completa:
+    - JVM: `kernel`, `logic`, `set`, `relation`, `function`, `construction`, `ordinal`, `cardinal`, `descriptive`, `combinatorics`, `forcing`, `examples`
+    - JS compile: mesmos modulos.
+
+- **Resultado:**
+  - Roadmap `docs/ROADMAP.md` implementado fim-a-fim (Sprint 1 ao 20) no codigo.
+  - Ambiente local continua sem build Native completo por restricoes de toolchain, mas validacao JVM + JS verde.
+
+### Expansion Construction para Tipos Analiticos (R, Irracionais, Imaginarios, Complexos)
+- **Data:** 2026-02-17
+- **Escopo:** `construction/` (novos subpacotes `real`, `irrational`, `complex`)
+- **Mudancas principais:**
+  - `ConstructedReal` com aproximantes racionais + interoperabilidade com `RealNumber`.
+  - `ConstructedIrrational` com simbolo e aproximacao construida, incluindo constantes canonicas.
+  - `ConstructedImaginary` e `ConstructedComplex` com operacoes algébricas e embeddings.
+  - Objetos de isomorfismo/embedding para roundtrip e verificacao com kernel.
+- **Testes adicionados:**
+  - `ConstructedRealTest`, `ConstructedIrrationalTest`, `ConstructedImaginaryTest`, `ConstructedComplexTest`.
+- **Validacao:**
+  - `:construction:jvmTest :construction:compileKotlinJs`
+  - `:examples:jvmTest :examples:compileKotlinJs`

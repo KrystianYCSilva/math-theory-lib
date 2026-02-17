@@ -12,9 +12,10 @@ import kotlin.jvm.JvmInline
 value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber>, MathElement {
 
     init {
-        if (value.signum() > 0) {
+        if (value.signum() < 0) {
             throw ArithmeticException(
-                "Natural numbers have to be natural number (>= 0): $value")
+                "Natural numbers must be non-negative (>= 0): $value"
+            )
         }
     }
 
