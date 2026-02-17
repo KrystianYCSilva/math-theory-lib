@@ -1,10 +1,9 @@
 package mathsets.kernel
 
-import mathsets.kernel.platform.BigInteger
-import mathsets.kernel.platform.BI_ZERO
 import mathsets.kernel.platform.BI_ONE
+import mathsets.kernel.platform.BI_ZERO
+import mathsets.kernel.platform.BigInteger
 import mathsets.kernel.platform.bigIntegerOf
-import mathsets.kernel.platform.*
 import kotlin.jvm.JvmInline
 
 /**
@@ -13,10 +12,14 @@ import kotlin.jvm.JvmInline
  * Armazena par (numerador, denominador) sempre normalizado.
  */
 @JvmInline
-value class RationalNumber private constructor(private val packed: Pair<BigInteger, BigInteger>) : Comparable<RationalNumber>, MathElement {
-    
+value class RationalNumber private constructor(private val packed: Pair<BigInteger, BigInteger>) :
+    Comparable<RationalNumber>, MathElement {
+
     val numerator: BigInteger get() = packed.first
     val denominator: BigInteger get() = packed.second
+
+    fun numeratorAsInteger(): IntegerNumber = IntegerNumber.parse(numerator.toString())
+    fun denominatorAsInteger(): IntegerNumber = IntegerNumber.parse(denominator.toString())
 
     operator fun plus(other: RationalNumber): RationalNumber {
         // a/b + c/d = (ad + bc) / bd
@@ -45,7 +48,7 @@ value class RationalNumber private constructor(private val packed: Pair<BigInteg
             this.denominator * other.numerator
         )
     }
-    
+
     operator fun unaryMinus(): RationalNumber = RationalNumber(Pair(-numerator, denominator))
 
     override fun compareTo(other: RationalNumber): Int {
@@ -65,22 +68,26 @@ value class RationalNumber private constructor(private val packed: Pair<BigInteg
         fun of(numerator: BigInteger, denominator: BigInteger = BI_ONE): RationalNumber {
             return create(numerator, denominator)
         }
-        
+
         fun of(numerator: Int, denominator: Int = 1): RationalNumber {
             return create(bigIntegerOf(numerator), bigIntegerOf(denominator))
         }
 
+        fun of(numerator: IntegerNumber, denominator: IntegerNumber = IntegerNumber.ONE): RationalNumber {
+            return create(numerator.value, denominator.value)
+        }
+
         private fun create(numerator: BigInteger, denominator: BigInteger): RationalNumber {
             if (denominator == BI_ZERO) throw ArithmeticException("Denominator cannot be zero")
-            
+
             var num = numerator
             var den = denominator
-            
+
             if (den < BI_ZERO) {
                 num = -num
                 den = -den
             }
-            
+
             val common = gcd(num.abs(), den)
             return RationalNumber(Pair(num / common, den / common))
         }

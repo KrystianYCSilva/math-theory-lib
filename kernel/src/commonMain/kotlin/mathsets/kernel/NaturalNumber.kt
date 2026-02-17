@@ -1,29 +1,27 @@
 package mathsets.kernel
 
-import mathsets.kernel.platform.BigInteger
-import mathsets.kernel.platform.BI_ONE
-import mathsets.kernel.platform.BI_ZERO
-import mathsets.kernel.platform.bigIntegerOf
-import mathsets.kernel.platform.toBigInteger
 import mathsets.kernel.platform.*
 import kotlin.jvm.JvmInline
 
 /**
  * Representa um número natural (ℕ = {0, 1, 2, ...}).
- * 
+ *
  * Implementado como uma value class sobre BigInteger para performance.
  */
 @JvmInline
 value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber>, MathElement {
-    
+
     init {
-        // Validation handled at factory or assumed for performance in internal paths
+        if (value.signum() > 0) {
+            throw ArithmeticException(
+                "Natural numbers have to be natural number (>= 0): $value")
+        }
     }
 
-    operator fun plus(other: NaturalNumber): NaturalNumber = 
+    operator fun plus(other: NaturalNumber): NaturalNumber =
         NaturalNumber(this.value + other.value)
 
-    operator fun times(other: NaturalNumber): NaturalNumber = 
+    operator fun times(other: NaturalNumber): NaturalNumber =
         NaturalNumber(this.value * other.value)
 
     operator fun minus(other: NaturalNumber): NaturalNumber {
@@ -39,12 +37,12 @@ value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber>, Ma
     }
 
     operator fun div(other: NaturalNumber): NaturalNumber =
-        NaturalNumber(this.value / other.value) 
+        NaturalNumber(this.value / other.value)
 
     operator fun rem(other: NaturalNumber): NaturalNumber =
         NaturalNumber(this.value % other.value)
 
-    override fun compareTo(other: NaturalNumber): Int = 
+    override fun compareTo(other: NaturalNumber): Int =
         this.value.compareTo(other.value)
 
     fun succ(): NaturalNumber = NaturalNumber(this.value + BI_ONE)
@@ -55,9 +53,9 @@ value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber>, Ma
     }
 
     fun isZero(): Boolean = this.value == BI_ZERO
-    
+
     fun isEven(): Boolean = (this.value % 2.toBigInteger()) == BI_ZERO
-    
+
     fun isOdd(): Boolean = !isEven()
 
     fun isPrime(): Boolean {
@@ -98,10 +96,10 @@ value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber>, Ma
             require(value >= 0) { "NaturalNumber must be non-negative: $value" }
             return NaturalNumber(bigIntegerOf(value))
         }
-        
+
         fun parse(string: String): NaturalNumber {
-             val bigInt = bigIntegerOf(string)
-             return of(bigInt)
+            val bigInt = bigIntegerOf(string)
+            return of(bigInt)
         }
     }
 }

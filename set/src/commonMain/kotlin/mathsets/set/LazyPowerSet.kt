@@ -5,9 +5,12 @@ import mathsets.kernel.NaturalNumber
 
 class LazyPowerSet<T>(private val original: MathSet<T>) : MathSet<MathSet<T>> {
     override val cardinality: Cardinality
-        get() = when (val base = original.cardinality) {
+        get() = when (original.cardinality) {
             is Cardinality.Finite -> {
-                val n = base.n.value.toInt()
+                val n = when (original) {
+                    is ExtensionalSet -> original.elementsBackingPublic.size
+                    else -> original.elements().count()
+                }
                 if (n >= 0 && n <= 30) {
                     Cardinality.Finite(NaturalNumber.of(1 shl n))
                 } else {
@@ -51,4 +54,3 @@ class LazyPowerSet<T>(private val original: MathSet<T>) : MathSet<MathSet<T>> {
 
     override fun intersect(other: MathSet<MathSet<T>>): MathSet<MathSet<T>> = IntersectionSetView(this, other)
 }
-

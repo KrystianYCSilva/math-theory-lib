@@ -5,7 +5,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import mathsets.kernel.platform.BI_ONE
 import mathsets.kernel.platform.BI_ZERO
-import mathsets.kernel.platform.abs
+import mathsets.kernel.platform.toInt
 
 class GeneratorTest : FunSpec({
     test("naturals generates 0..99 for first 100 values") {

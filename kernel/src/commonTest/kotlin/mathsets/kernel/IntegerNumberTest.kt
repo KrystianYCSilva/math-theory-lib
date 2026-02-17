@@ -7,7 +7,7 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.checkAll
 
 class IntegerNumberTest : FunSpec({
-    
+
     test("Addition commutativity") {
         checkAll(Arb.long(), Arb.long()) { a, b ->
             val n1 = IntegerNumber.of(a)

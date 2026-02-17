@@ -7,7 +7,7 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.checkAll
 
 class NaturalNumberTest : FunSpec({
-    
+
     test("Addition commutativity") {
         checkAll(Arb.long(0, Long.MAX_VALUE), Arb.long(0, Long.MAX_VALUE)) { a, b ->
             val n1 = NaturalNumber.of(a)
@@ -17,14 +17,14 @@ class NaturalNumberTest : FunSpec({
     }
 
     test("Multiplication commutativity") {
-         checkAll(Arb.long(0, Long.MAX_VALUE), Arb.long(0, Long.MAX_VALUE)) { a, b ->
-             // Limit range to avoid overflow if using standard Long for check, 
-             // but BigInteger handles it.
-             // However, Arb.long generates Longs, which fit in BigInteger.
-             val n1 = NaturalNumber.of(a)
-             val n2 = NaturalNumber.of(b)
-             (n1 * n2) shouldBe (n2 * n1)
-         }
+        checkAll(Arb.long(0, Long.MAX_VALUE), Arb.long(0, Long.MAX_VALUE)) { a, b ->
+            // Limit range to avoid overflow if using standard Long for check,
+            // but BigInteger handles it.
+            // However, Arb.long generates Longs, which fit in BigInteger.
+            val n1 = NaturalNumber.of(a)
+            val n2 = NaturalNumber.of(b)
+            (n1 * n2) shouldBe (n2 * n1)
+        }
     }
 
     test("Identity element for addition (0)") {

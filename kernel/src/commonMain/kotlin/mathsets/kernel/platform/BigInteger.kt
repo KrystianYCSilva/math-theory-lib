@@ -1,36 +1,17 @@
 package mathsets.kernel.platform
 
-expect class BigInteger : Comparable<BigInteger> {
-    // No member operators if mapped to Java class without them
-    override fun toString(): String
-    override fun equals(other: Any?): Boolean
-    override fun hashCode(): Int
-    
-    fun toLong(): Long
-    fun toInt(): Int
-}
+typealias BigInteger = com.ionspin.kotlin.bignum.integer.BigInteger
 
-// Operators as extension functions
-expect operator fun BigInteger.plus(other: BigInteger): BigInteger
-expect operator fun BigInteger.minus(other: BigInteger): BigInteger
-expect operator fun BigInteger.times(other: BigInteger): BigInteger
-expect operator fun BigInteger.div(other: BigInteger): BigInteger
-expect operator fun BigInteger.rem(other: BigInteger): BigInteger
-expect operator fun BigInteger.unaryMinus(): BigInteger
+val BI_ZERO: BigInteger = BigInteger.ZERO
+val BI_ONE: BigInteger = BigInteger.ONE
+val BI_TEN: BigInteger = BigInteger.TEN
 
-// Methods
-expect fun BigInteger.abs(): BigInteger
-expect fun BigInteger.pow(exponent: Int): BigInteger
+fun String.toBigInteger(): BigInteger = BigInteger.parseString(this, 10)
+fun Long.toBigInteger(): BigInteger = BigInteger.fromLong(this)
+fun Int.toBigInteger(): BigInteger = BigInteger.fromInt(this)
 
-// Constants
-expect val BI_ZERO: BigInteger
-expect val BI_ONE: BigInteger
-expect val BI_TEN: BigInteger
-
-// Factories
-expect fun String.toBigInteger(): BigInteger
-expect fun Long.toBigInteger(): BigInteger
-expect fun Int.toBigInteger(): BigInteger
+fun BigInteger.toLong(): Long = this.longValue(false)
+fun BigInteger.toInt(): Int = this.intValue(false)
 
 fun bigIntegerOf(value: Int): BigInteger = value.toBigInteger()
 fun bigIntegerOf(value: Long): BigInteger = value.toBigInteger()

@@ -7,7 +7,7 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.checkAll
 
 class RationalNumberTest : FunSpec({
-    
+
     test("Normalization (2/4 == 1/2)") {
         RationalNumber.of(2, 4) shouldBe RationalNumber.of(1, 2)
     }

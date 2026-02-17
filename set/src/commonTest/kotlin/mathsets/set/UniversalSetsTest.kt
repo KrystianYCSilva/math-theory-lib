@@ -14,8 +14,14 @@ class UniversalSetsTest : FunSpec({
         (NaturalNumber.of(4) in evens) shouldBe true
         (NaturalNumber.of(7) in primes) shouldBe true
 
-        val firstFive = evens.elements().take(5).map { it.value.toInt() }.toList()
-        firstFive shouldContainExactly listOf(0, 2, 4, 6, 8)
+        val firstFive = evens.elements().take(5).toList()
+        firstFive shouldContainExactly listOf(
+            NaturalNumber.of(0),
+            NaturalNumber.of(2),
+            NaturalNumber.of(4),
+            NaturalNumber.of(6),
+            NaturalNumber.of(8)
+        )
     }
 
     test("materializing infinite set throws dedicated exception") {
@@ -32,4 +38,3 @@ class UniversalSetsTest : FunSpec({
         (NaturalNumber.of(99) in evens) shouldBe false
     }
 })
-

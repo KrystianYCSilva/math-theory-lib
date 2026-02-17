@@ -1,10 +1,9 @@
 package mathsets.kernel
 
-import mathsets.kernel.platform.BigInteger
-import mathsets.kernel.platform.BI_ZERO
 import mathsets.kernel.platform.BI_ONE
+import mathsets.kernel.platform.BI_ZERO
+import mathsets.kernel.platform.BigInteger
 import mathsets.kernel.platform.bigIntegerOf
-import mathsets.kernel.platform.*
 import kotlin.jvm.JvmInline
 
 /**
@@ -32,6 +31,11 @@ value class IntegerNumber(val value: BigInteger) : Comparable<IntegerNumber>, Ma
 
     fun abs(): IntegerNumber = IntegerNumber(this.value.abs())
 
+    fun toNaturalOrNull(): NaturalNumber? =
+        if (this < ZERO) null else NaturalNumber.parse(this.toString())
+
+    fun absNatural(): NaturalNumber = NaturalNumber.parse(this.abs().toString())
+
     override fun compareTo(other: IntegerNumber): Int =
         this.value.compareTo(other.value)
 
@@ -45,7 +49,7 @@ value class IntegerNumber(val value: BigInteger) : Comparable<IntegerNumber>, Ma
         fun of(value: BigInteger): IntegerNumber = IntegerNumber(value)
         fun of(value: Long): IntegerNumber = IntegerNumber(bigIntegerOf(value))
         fun of(value: Int): IntegerNumber = IntegerNumber(bigIntegerOf(value))
-        
+
         fun parse(string: String): IntegerNumber = IntegerNumber(bigIntegerOf(string))
     }
 }

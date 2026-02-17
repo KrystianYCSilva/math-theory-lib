@@ -5,13 +5,13 @@ plugins {
 kotlin {
     // Target Configuration
     jvm()
-    
+
     // Native Targets (Host based + standard targets)
     linuxX64()
     macosArm64()
     macosX64()
     mingwX64() // Windows Native
-    
+
     // JS / Wasm (Future proofing)
     js(IR) {
         browser()
@@ -22,6 +22,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib"))
+                implementation(libs.bignum)
             }
         }
         val commonTest by getting {

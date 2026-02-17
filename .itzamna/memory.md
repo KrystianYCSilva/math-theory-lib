@@ -100,3 +100,135 @@ Início da Implementação (Sprint 1: Kernel). Setup do projeto (scaffolding de 
 
 - Sprints 11-20 (construction, ordinal avançado, cardinal, descriptive, combinatorics, forcing, examples) continuam pendentes.
 - `./gradlew check` completo ainda bloqueia por compilação native no ambiente atual (path/toolchain de Kotlin/Native).
+
+---
+
+## Atualizacao de Sessao (2026-02-17 - KMP BigInteger)
+
+- **Nivel:** Deliberado
+- **Resumo:** Refatoração KMP para remover `expect/actual` de `BigInteger`, alinhando com recomendação de evitar dependência de classificadores `expect/actual` e eliminando warnings de beta feature.
+
+### Decisao Tecnica
+
+- Substituída a abstração `expect/actual` de `mathsets.kernel.platform.BigInteger` por implementação comum baseada na lib multiplataforma `com.ionspin.kotlin:bignum`.
+- Removidos arquivos platform-specific:
+  - `kernel/src/jvmMain/kotlin/mathsets/kernel/platform/BigIntegerImpl.kt`
+  - `kernel/src/jsMain/kotlin/mathsets/kernel/platform/BigIntegerImpl.kt`
+  - `kernel/src/nativeMain/kotlin/mathsets/kernel/platform/BigIntegerImpl.kt`
+- Atualizados:
+  - `gradle/libs.versions.toml` (adição `bignum`)
+  - `kernel/build.gradle.kts` (dependency `libs.bignum`)
+  - `kernel/src/commonMain/kotlin/mathsets/kernel/platform/BigInteger.kt` (API comum com wrappers de conversão)
+
+### Ajustes de Compatibilidade
+
+- Ajustes em testes e uso de cardinalidade finita para não depender de conversões internas de `BigInteger` fora do módulo `kernel`.
+
+### Validacao Executada
+
+- `:kernel:jvmTest`
+- `:kernel:compileKotlinJs`
+- `:kernel:jvmTest :set:jvmTest :relation:jvmTest :function:jvmTest :logic:jvmTest`
+- `:kernel:compileKotlinJs :set:compileKotlinJs :relation:compileKotlinJs :function:compileKotlinJs :logic:compileKotlinJs`
+
+### Observacao
+
+- Warning de `expect/actual classes ... are in Beta` eliminado.
+
+---
+
+## Atualizacao de Sessao (2026-02-17 - Kernel Analise e Casos de Uso)
+
+- **Nivel:** Deliberado
+- **Resumo:** Expansao do kernel numerico para analise (reais, imaginarios, complexos, irracionais simbolicos e reta estendida com infinito/indeterminado), com casos de uso e testes adicionais.
+
+### Entregas Realizadas
+
+- **Kernel numerico estendido:**
+  - `RealNumber` consolidado sobre `BigDecimal` multiplataforma (`bignum`), incluindo conversao de `RationalNumber`.
+  - Novos tipos:
+    - `ImaginaryNumber`
+    - `ComplexNumber`
+    - `IrrationalNumber` (simbolo + aproximacao decimal)
+    - `ExtendedReal` (`Finite`, `PositiveInfinity`, `NegativeInfinity`, `Indeterminate`) com regras para operacoes envolvendo zero e infinito.
+  - Nova base decimal multiplataforma em `kernel/src/commonMain/kotlin/mathsets/kernel/platform/BigDecimal.kt`.
+
+- **Casos de uso:**
+  - Modulo `examples/` ativado com `build.gradle.kts` KMP.
+  - `KernelAndSetUseCases` cobrindo:
+    - comportamento de `1/x` com infinito,
+    - quociente de diferencas para `f(x)=x^2` em `x=0`,
+    - raizes complexas de `x^2 + 1 = 0`,
+    - particao por paridade,
+    - roundtrip de bijecao finita.
+
+- **Testes novos:**
+  - `kernel`: `RealNumberTest`, `ImaginaryNumberTest`, `ComplexNumberTest`, `IrrationalNumberTest`, `ExtendedRealTest`.
+  - `examples`: `KernelAndSetUseCasesTest`.
+
+### Validacao Executada
+
+- `:kernel:jvmTest :examples:jvmTest`
+- `:kernel:compileKotlinJs :examples:compileKotlinJs`
+- `:kernel:jvmTest :set:jvmTest :relation:jvmTest :function:jvmTest :examples:jvmTest`
+
+### Observacoes
+
+- Warning de visibilidade de `copy()` em data class privada foi resolvido com `@ConsistentCopyVisibility` em `IrrationalNumber`.
+- Persistem logs de fallback do Kotlin daemon no ambiente atual (acesso a pasta local do daemon), sem impacto no resultado final do build (tasks concluindo com sucesso).
+
+---
+
+## Atualizacao de Sessao (2026-02-17 - UniversalSets Analiticos e Base de Calculo)
+
+- **Nivel:** Deliberado
+- **Resumo:** Implementacao dos passos pendentes para dominios analiticos e base de limites/derivadas, com revisao de `Arithmetic` para novos tipos do kernel.
+
+### Entregas Realizadas
+
+- **Set - UniversalSets analiticos intensionais (nao enumeraveis):**
+  - Atualizado `set/src/commonMain/kotlin/mathsets/set/UniversalSets.kt` com:
+    - `Reals`
+    - `Irrationals`
+    - `Imaginaries`
+    - `Complexes`
+    - `ExtendedReals`
+  - Semantica aplicada:
+    - `contains(...)` total no tipo correspondente.
+    - `elements()` nao suportado explicitamente (nao enumeravel).
+    - `materialize()` proibido com `InfiniteMaterializationException`.
+    - `union`/`intersect` com identidade universal (`union -> this`, `intersect -> other`).
+
+- **Kernel - Mini modulo de limites e derivadas (base):**
+  - Adicionados:
+    - `kernel/src/commonMain/kotlin/mathsets/kernel/analysis/Limits.kt`
+    - `kernel/src/commonMain/kotlin/mathsets/kernel/analysis/Derivatives.kt`
+  - Recursos:
+    - quociente em `ExtendedReal`;
+    - reciproco com suporte a infinito;
+    - limites laterais de `1/x` em `x -> 0` (esquerda/direita);
+    - quociente de diferencas (forward) e quociente simetrico como base de derivacao.
+
+- **Kernel - Complementacao de Arithmetic:**
+  - `Arithmetic.kt` expandido com:
+    - `AlgebraicArithmetic` (sem ordem);
+    - `Arithmetic` (ordenado) estendendo `AlgebraicArithmetic`;
+    - `RealArithmetic`;
+    - `ExtendedRealArithmetic`;
+    - `ComplexArithmetic` (somente algebraico, sem `compare`).
+  - Decisao: complexos nao possuem ordem total canonica, portanto nao implementam `compare`.
+
+### Testes Adicionados/Atualizados
+
+- `set/src/commonTest/kotlin/mathsets/set/AnalyticUniversalSetsTest.kt`
+- `kernel/src/commonTest/kotlin/mathsets/kernel/analysis/LimitsAndDerivativesTest.kt`
+- `kernel/src/commonTest/kotlin/mathsets/kernel/ArithmeticTest.kt` (cobertura dos novos arithmetics)
+
+### Validacao Executada
+
+- `:kernel:jvmTest :set:jvmTest :examples:jvmTest`
+- `:kernel:compileKotlinJs :set:compileKotlinJs :examples:compileKotlinJs`
+
+### Observacoes
+
+- Build continua exibindo fallback do Kotlin daemon no ambiente atual (permissao em pasta local do daemon), mas tasks concluidas com sucesso.
