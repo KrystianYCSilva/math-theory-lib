@@ -1,10 +1,10 @@
 package mathsets.kernel
 
 import mathsets.kernel.platform.BigInteger
-import mathsets.kernel.platform.BI_ZERO
 import mathsets.kernel.platform.BI_ONE
-import mathsets.kernel.platform.toBigInteger
+import mathsets.kernel.platform.BI_ZERO
 import mathsets.kernel.platform.bigIntegerOf
+import mathsets.kernel.platform.toBigInteger
 import mathsets.kernel.platform.*
 import kotlin.jvm.JvmInline
 
@@ -14,7 +14,7 @@ import kotlin.jvm.JvmInline
  * Implementado como uma value class sobre BigInteger para performance.
  */
 @JvmInline
-value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber> {
+value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber>, MathElement {
     
     init {
         // Validation handled at factory or assumed for performance in internal paths
@@ -25,6 +25,18 @@ value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber> {
 
     operator fun times(other: NaturalNumber): NaturalNumber = 
         NaturalNumber(this.value * other.value)
+
+    operator fun minus(other: NaturalNumber): NaturalNumber {
+        require(this >= other) { "Subtraction is partial in N: $this - $other is undefined" }
+        return NaturalNumber(this.value - other.value)
+    }
+
+    infix fun pow(exponent: NaturalNumber): NaturalNumber {
+        require(exponent.value <= MAX_INT_BIG_INTEGER) {
+            "Exponent too large for BigInteger.pow(Int): ${exponent.value}"
+        }
+        return NaturalNumber(this.value.pow(exponent.value.toInt()))
+    }
 
     operator fun div(other: NaturalNumber): NaturalNumber =
         NaturalNumber(this.value / other.value) 
@@ -48,11 +60,29 @@ value class NaturalNumber(val value: BigInteger) : Comparable<NaturalNumber> {
     
     fun isOdd(): Boolean = !isEven()
 
+    fun isPrime(): Boolean {
+        if (value < TWO_BIG_INTEGER) return false
+        if (value == TWO_BIG_INTEGER || value == THREE_BIG_INTEGER) return true
+        if (value % TWO_BIG_INTEGER == BI_ZERO || value % THREE_BIG_INTEGER == BI_ZERO) return false
+
+        var i = bigIntegerOf(5)
+        var step = bigIntegerOf(2)
+        while (i * i <= value) {
+            if (value % i == BI_ZERO) return false
+            i += step
+            step = if (step == bigIntegerOf(2)) bigIntegerOf(4) else bigIntegerOf(2)
+        }
+        return true
+    }
+
     override fun toString(): String = value.toString()
 
     companion object {
         val ZERO = NaturalNumber(BI_ZERO)
         val ONE = NaturalNumber(BI_ONE)
+        private val TWO_BIG_INTEGER = bigIntegerOf(2)
+        private val THREE_BIG_INTEGER = bigIntegerOf(3)
+        private val MAX_INT_BIG_INTEGER = bigIntegerOf(Int.MAX_VALUE)
 
         fun of(value: BigInteger): NaturalNumber {
             require(value >= BI_ZERO) { "NaturalNumber must be non-negative: $value" }

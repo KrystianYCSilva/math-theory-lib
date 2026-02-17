@@ -1,22 +1,38 @@
 package mathsets.set
 
-class IntensionalSet<T>(private val domain: MathSet<T>, private val predicate: (T) -> Boolean) : MathSet<T> {
+import mathsets.kernel.Cardinality
+import mathsets.kernel.NaturalNumber
+
+class IntensionalSet<T>(
+    private val domain: MathSet<T>,
+    private val predicate: (T) -> Boolean
+) : MathSet<T> {
+    private var cachedMaterialization: ExtensionalSet<T>? = null
+
+    override val cardinality: Cardinality
+        get() = when (domain.cardinality) {
+            is Cardinality.Finite -> {
+                cachedMaterialization?.cardinality ?: Cardinality.Finite(
+                    NaturalNumber.of(elements().count())
+                )
+            }
+            else -> Cardinality.Unknown
+        }
+
     override fun contains(element: T): Boolean = (element in domain) && predicate(element)
 
     override fun elements(): Sequence<T> = domain.elements().filter(predicate)
 
     override fun materialize(): ExtensionalSet<T> {
-        // Conservative: attempt to materialize by collecting elements (may be infinite)
-        val collected = elements().toSet()
-        return ExtensionalSet(collected)
+        cachedMaterialization?.let { return it }
+        if (!domain.cardinality.isFinite()) {
+            throw InfiniteMaterializationException("Cannot materialize intensional set over non-finite domain")
+        }
+        return ExtensionalSet(elements().toSet()).also { cachedMaterialization = it }
     }
 
-    override fun union(other: MathSet<T>): MathSet<T> {
-        // Return an intensional view where appropriate
-        return IntensionalSet(domain) { e -> this.contains(e) || e in other }
-    }
+    override fun union(other: MathSet<T>): MathSet<T> = UnionSetView(this, other)
 
-    override fun intersect(other: MathSet<T>): MathSet<T> {
-        return IntensionalSet(domain) { e -> this.contains(e) && e in other }
-    }
+    override fun intersect(other: MathSet<T>): MathSet<T> = IntersectionSetView(this, other)
 }
+

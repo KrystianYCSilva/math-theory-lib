@@ -3,14 +3,14 @@ package mathsets.kernel.platform
 external fun BigInt(value: Any): dynamic
 
 actual class BigInteger(val value: dynamic) : Comparable<BigInteger> {
-    override fun toString(): String = value.toString()
+    actual override fun toString(): String = value.toString()
     
-    override fun equals(other: Any?): Boolean {
+    actual override fun equals(other: Any?): Boolean {
         if (other !is BigInteger) return false
         return value == other.value
     }
     
-    override fun hashCode(): Int = value.toString().hashCode()
+    actual override fun hashCode(): Int = value.toString().hashCode()
 
     override fun compareTo(other: BigInteger): Int {
         return if (value < other.value) -1 else if (value > other.value) 1 else 0

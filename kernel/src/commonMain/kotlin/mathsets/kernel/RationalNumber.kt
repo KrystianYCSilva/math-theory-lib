@@ -13,7 +13,7 @@ import kotlin.jvm.JvmInline
  * Armazena par (numerador, denominador) sempre normalizado.
  */
 @JvmInline
-value class RationalNumber private constructor(private val packed: Pair<BigInteger, BigInteger>) : Comparable<RationalNumber> {
+value class RationalNumber private constructor(private val packed: Pair<BigInteger, BigInteger>) : Comparable<RationalNumber>, MathElement {
     
     val numerator: BigInteger get() = packed.first
     val denominator: BigInteger get() = packed.second

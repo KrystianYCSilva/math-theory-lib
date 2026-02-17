@@ -47,4 +47,32 @@ class NaturalNumberTest : FunSpec({
             n.succ() shouldBe (n + NaturalNumber.ONE)
         }
     }
+
+    test("Only zero satisfies isZero") {
+        checkAll(Arb.long(0, Long.MAX_VALUE)) { a ->
+            val n = NaturalNumber.of(a)
+            n.isZero() shouldBe (a == 0L)
+        }
+    }
+
+    test("isPrime classifies small known values") {
+        val primes = listOf(2, 3, 5, 7, 11, 13, 17, 19, 97, 9973)
+        primes.forEach { n ->
+            NaturalNumber.of(n).isPrime() shouldBe true
+        }
+
+        val nonPrimes = listOf(0, 1, 4, 6, 8, 9, 10, 12, 21, 100)
+        nonPrimes.forEach { n ->
+            NaturalNumber.of(n).isPrime() shouldBe false
+        }
+    }
+
+    test("pow follows repeated multiplication for small values") {
+        checkAll(Arb.long(0, 12), Arb.long(0, 8)) { a, b ->
+            val base = NaturalNumber.of(a)
+            val exponent = NaturalNumber.of(b)
+            val expected = (0 until b.toInt()).fold(NaturalNumber.ONE) { acc, _ -> acc * base }
+            (base pow exponent) shouldBe expected
+        }
+    }
 })

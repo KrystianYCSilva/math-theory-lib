@@ -9,6 +9,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(project(":kernel"))
                 implementation(project(":set"))
                 implementation(kotlin("stdlib"))
             }

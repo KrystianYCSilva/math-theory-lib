@@ -1,14 +1,14 @@
 package mathsets.kernel.platform
 
 actual class BigInteger(val value: Long) : Comparable<BigInteger> {
-    override fun toString(): String = value.toString()
+    actual override fun toString(): String = value.toString()
     
-    override fun equals(other: Any?): Boolean {
+    actual override fun equals(other: Any?): Boolean {
         if (other !is BigInteger) return false
         return value == other.value
     }
     
-    override fun hashCode(): Int = value.hashCode()
+    actual override fun hashCode(): Int = value.hashCode()
 
     override fun compareTo(other: BigInteger): Int = value.compareTo(other.value)
     

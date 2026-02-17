@@ -3,74 +3,78 @@ package mathsets.set
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
-import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.set
 import io.kotest.property.forAll
 
 class SetAlgebraPropertiesTest : FunSpec({
+    fun mathSetArb(): Arb<MathSet<Int>> =
+        Arb.set(Arb.int(-100, 100), range = 0..40).map { ExtensionalSet(it) }
 
-    // Simple arbitrary producing finite extensional MathSet<Int>
-    fun mathSetArb(): Arb<MathSet<Int>> = Arb.set(Arb.int()).map { ExtensionalSet(it.toSet()) }
+    fun membershipEquals(a: MathSet<Int>, b: MathSet<Int>, universe: Set<Int>): Boolean =
+        universe.all { x -> (x in a) == (x in b) }
 
-    test("Union is commutative") {
+    test("Union and intersection are commutative") {
         forAll(mathSetArb(), mathSetArb()) { a, b ->
-            val left = a union b
-            val right = b union a
-            // Compare by checking equality of membership for elements in union of elements
-            val universe = ExtensionalSet((a.elements().toSet() + b.elements().toSet()))
-            universe.elements().all { x -> (x in left) == (x in right) }
-        }
-    }
-
-    test("Intersect is commutative") {
-        forAll(mathSetArb(), mathSetArb()) { a, b ->
-            val left = a intersect b
-            val right = b intersect a
-            val universe = ExtensionalSet((a.elements().toSet() + b.elements().toSet()))
-            universe.elements().all { x -> (x in left) == (x in right) }
+            val universe = a.elements().toSet() + b.elements().toSet()
+            membershipEquals(a union b, b union a, universe) &&
+                membershipEquals(a intersect b, b intersect a, universe)
         }
     }
 
     test("Union is associative") {
         forAll(mathSetArb(), mathSetArb(), mathSetArb()) { a, b, c ->
-            val left = (a union b) union c
-            val right = a union (b union c)
-            val universe = ExtensionalSet((a.elements().toSet() + b.elements().toSet() + c.elements().toSet()))
-            universe.elements().all { x -> (x in left) == (x in right) }
+            val universe = a.elements().toSet() + b.elements().toSet() + c.elements().toSet()
+            membershipEquals((a union b) union c, a union (b union c), universe)
         }
     }
 
-    test("Idempotence: A union A == A") {
-        forAll(mathSetArb()) { a ->
-            val left = a union a
-            val universe = ExtensionalSet(a.elements().toSet())
-            universe.elements().all { x -> (x in left) == (x in a) }
-        }
-    }
-
-    test("Identity: A union Empty == A and A intersect Empty == Empty") {
+    test("Idempotence and identity") {
         forAll(mathSetArb()) { a ->
             val empty = MathSet.empty<Int>()
-            val union = a union empty
-            val intersect = a intersect empty
-            val universe = ExtensionalSet(a.elements().toSet())
-            val unionOk = universe.elements().all { x -> (x in union) == (x in a) }
-            val intersectOk = universe.elements().all { x -> (x in intersect) == false }
-            unionOk && intersectOk
+            val universe = a.elements().toSet()
+            membershipEquals(a union a, a, universe) &&
+                membershipEquals(a union empty, a, universe) &&
+                membershipEquals(a intersect empty, empty, universe)
         }
     }
 
-    test("De Morgan: (A ∪ B)^c = A^c ∩ B^c (element-wise)") {
+    test("Absorption law") {
+        forAll(mathSetArb(), mathSetArb()) { a, b ->
+            val universe = a.elements().toSet() + b.elements().toSet()
+            membershipEquals(a union (a intersect b), a, universe)
+        }
+    }
+
+    test("De Morgan + involution") {
         forAll(mathSetArb(), mathSetArb(), mathSetArb()) { a, b, u ->
-            // universe is u ∪ a ∪ b to ensure complements taken against a finite universe
-            val universeSet = a.elements().toSet() + b.elements().toSet() + u.elements().toSet()
-            val universe = ExtensionalSet(universeSet)
-            universe.elements().all { x ->
-                val left = !(x in (a union b))
-                val right = (!(x in a)) && (!(x in b))
-                left == right
-            }
+            val universe = ExtensionalSet(a.elements().toSet() + b.elements().toSet() + u.elements().toSet())
+            val universeElements = universe.elements().toSet()
+            val deMorganHolds = membershipEquals(
+                (a union b).complement(universe),
+                a.complement(universe) intersect b.complement(universe),
+                universeElements
+            )
+            val involutionHolds = membershipEquals(
+                a.complement(universe).complement(universe),
+                a,
+                universeElements
+            )
+            deMorganHolds && involutionHolds
         }
     }
 
+    test("Extensionality on finite universe") {
+        forAll(mathSetArb(), mathSetArb(), mathSetArb()) { a, b, u ->
+            val universe = ExtensionalSet(a.elements().toSet() + b.elements().toSet() + u.elements().toSet())
+            val sameMembership = universe.elements().all { x -> (x in a) == (x in b) }
+            val extensionality = if (sameMembership) {
+                (a isSubsetOf b) && (b isSubsetOf a)
+            } else {
+                true
+            }
+            extensionality
+        }
+    }
 })
+

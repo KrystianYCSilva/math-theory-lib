@@ -13,7 +13,7 @@ import kotlin.jvm.JvmInline
  * Implementado como value class sobre BigInteger.
  */
 @JvmInline
-value class IntegerNumber(val value: BigInteger) : Comparable<IntegerNumber> {
+value class IntegerNumber(val value: BigInteger) : Comparable<IntegerNumber>, MathElement {
 
     operator fun plus(other: IntegerNumber): IntegerNumber =
         IntegerNumber(this.value + other.value)
