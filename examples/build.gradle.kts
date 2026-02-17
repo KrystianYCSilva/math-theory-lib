@@ -10,6 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":kernel"))
+                implementation(project(":logic"))
                 implementation(project(":set"))
                 implementation(project(":relation"))
                 implementation(project(":function"))

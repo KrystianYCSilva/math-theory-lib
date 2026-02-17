@@ -3,14 +3,37 @@ package mathsets.ordinal
 import mathsets.kernel.NaturalNumber
 
 /**
- * Aritmética ordinal em CNF (expoentes finitos).
+ * Implements ordinal arithmetic operations on Cantor Normal Form representations
+ * with finite exponents.
  *
- * Observação: divisão ordinal geral não é suportada aqui.
+ * Provides addition, multiplication, exponentiation, and comparison of ordinals.
+ * Note that ordinal addition and multiplication are **not commutative**:
+ * for example, `1 + omega = omega`, but `omega + 1 != omega`.
+ *
+ * General ordinal division is not supported.
  */
 object OrdinalArithmetic {
+    /**
+     * Compares two ordinals lexicographically by their CNF terms.
+     *
+     * @param a The first ordinal.
+     * @param b The second ordinal.
+     * @return A negative integer, zero, or a positive integer as [a] is less than,
+     *         equal to, or greater than [b].
+     */
     fun compare(a: Ordinal, b: Ordinal): Int =
         compareTerms(a.toCanonicalTerms(), b.toCanonicalTerms())
 
+    /**
+     * Computes the ordinal sum `a + b`.
+     *
+     * Ordinal addition absorbs lower-order terms of [a] that are dominated by the
+     * leading term of [b]. This is why `1 + omega = omega` (the finite `1` is absorbed).
+     *
+     * @param a The left operand.
+     * @param b The right operand.
+     * @return The ordinal sum.
+     */
     fun add(a: Ordinal, b: Ordinal): Ordinal {
         if (a.isZero()) return b
         if (b.isZero()) return a
@@ -37,6 +60,16 @@ object OrdinalArithmetic {
         }
     }
 
+    /**
+     * Computes the ordinal product `a * b`.
+     *
+     * Ordinal multiplication distributes over addition on the right.
+     * Like addition, it is **not commutative**: `omega * 2 != 2 * omega`.
+     *
+     * @param a The left operand.
+     * @param b The right operand.
+     * @return The ordinal product.
+     */
     fun multiply(a: Ordinal, b: Ordinal): Ordinal {
         if (a.isZero() || b.isZero()) return Ordinal.ZERO
 
@@ -54,6 +87,15 @@ object OrdinalArithmetic {
         return result
     }
 
+    /**
+     * Computes the ordinal power `base ^ exponent` for a finite exponent.
+     *
+     * Uses iterated multiplication: base * base * ... * base (exponent times).
+     *
+     * @param base The base ordinal.
+     * @param exponent The finite exponent.
+     * @return The ordinal exponentiation result.
+     */
     fun power(base: Ordinal, exponent: NaturalNumber): Ordinal {
         if (exponent.isZero()) return Ordinal.ONE
 
@@ -109,4 +151,3 @@ object OrdinalArithmetic {
         else -> null
     }
 }
-

@@ -1,6 +1,40 @@
 package mathsets.logic
 
+/**
+ * A recursive-descent parser that converts a Unicode string representation
+ * of a first-order formula into a [Formula] AST.
+ *
+ * The parser recognizes the following grammar (from lowest to highest precedence):
+ *
+ * | Precedence | Operator | Symbol |
+ * |------------|----------|--------|
+ * | 1 (lowest) | Biconditional | `↔` |
+ * | 2          | Implication   | `→` |
+ * | 3          | Disjunction   | `∨` |
+ * | 4          | Conjunction   | `∧` |
+ * | 5          | Negation      | `¬` |
+ * | 6 (highest)| Quantifiers / Atoms | `∀`, `∃`, `∈`, `=` |
+ *
+ * Parentheses `(` `)` override precedence. Quantifiers bind as
+ * `∀x(body)` / `∃x(body)`.
+ *
+ * Usage:
+ * ```kotlin
+ * val formula = FormulaParser.parse("∀x(x ∈ A → x ∈ B)")
+ * ```
+ *
+ * @see Formula
+ * @see FormulaPrettyPrinter
+ * @throws IllegalStateException if the input string contains syntax errors.
+ */
 object FormulaParser {
+    /**
+     * Parses a Unicode formula string into a [Formula] AST.
+     *
+     * @param input The formula string to parse (e.g., `"∀x(x ∈ A)"`).
+     * @return The parsed [Formula] AST.
+     * @throws IllegalStateException if the input is not a well-formed formula.
+     */
     fun parse(input: String): Formula {
         val parser = Parser(tokenize(input))
         val formula = parser.parseFormula()
@@ -154,4 +188,3 @@ object FormulaParser {
         private fun peek(): String? = tokens.getOrNull(index)
     }
 }
-

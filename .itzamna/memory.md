@@ -321,3 +321,37 @@ Início da Implementação (Sprint 1: Kernel). Setup do projeto (scaffolding de 
 ### Observacoes
 
 - A expansão segue o mesmo padrão dual-mode já usado em `ConstructedInteger` e `ConstructedRational`: testemunho construtivo + canal explícito para verificação no kernel.
+
+---
+
+## Atualizacao de Sessao (2026-02-17 - Refatoracao Rigorosa dos Constructed Analiticos)
+
+- **Nivel:** Deliberado
+- **Resumo:** Substituicao da modelagem permissiva dos tipos analiticos em `construction` por definicoes mais rigorosas matematicamente.
+
+### Mudancas de Modelagem
+
+- `ConstructedReal`:
+  - Reformulado para usar representante explicito de sequencia de Cauchy sobre `ConstructedRational` (termo + modulo).
+  - Operacoes `+`, `-`, `*`, `/` passam a ser definidas sobre representantes (termwise/representantes derivados), mantendo `toKernel()` apenas como projecao de interoperabilidade.
+  - Adicionados recursos de verificacao finita: `approximateRational`, `modulusAt`, `isCauchyOnFinitePrefix`.
+  - Construtores matematicos: `squareRootOf(...)` via bissecao racional e `fromDecimalExpansion(...)` por truncamentos.
+
+- `ConstructedIrrational`:
+  - Reformulado com fundamento explicito (`ALGEBRAIC_CONSTRUCTION` vs `AXIOMATIC_SYMBOL`), corte inferior e testemunha de nao-racionalidade.
+  - `sqrt(2)`, `sqrt(3)` e `phi` definidos como construcoes algébricas.
+  - `pi` e `e` mantidos como simbolos axiomaticos com aproximacao construtiva para interoperabilidade.
+
+- `ConstructedImaginary` e `ConstructedComplex`:
+  - Reformulados para operar diretamente sobre componentes `ConstructedReal` (sem `kernelValue` como fonte de verdade).
+  - Aritmetica complexa definida por formulas em componentes reais construidos.
+
+### Testes Atualizados
+
+- `ConstructedRealTest` ampliado com verificacao de comportamento de Cauchy e aproximacao de `sqrt(2)`.
+- `ConstructedIrrationalTest` atualizado para cobrir cortes/testemunhas em irracionais algébricos e distinção axiomatica.
+
+### Validacao
+
+- `:construction:jvmTest :construction:compileKotlinJs`
+- `:examples:jvmTest :examples:compileKotlinJs`

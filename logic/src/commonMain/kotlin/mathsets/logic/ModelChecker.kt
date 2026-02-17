@@ -1,6 +1,44 @@
 package mathsets.logic
 
+/**
+ * Evaluates [Formula] instances against a given [Interpretation], implementing
+ * Tarski-style model-theoretic semantics for first-order logic.
+ *
+ * The checker recursively descends through the formula AST, resolving terms via
+ * the interpretation's constants, functions, and variable assignments, and
+ * evaluating logical connectives and quantifiers according to their standard
+ * truth-table / domain-ranging semantics.
+ *
+ * Usage:
+ * ```kotlin
+ * val interp = Interpretation(
+ *     universe = setOf(1, 2, 3),
+ *     membership = { elem, set -> (set as? Set<*>)?.contains(elem) == true }
+ * )
+ * val result = ModelChecker.evaluate(formula, interp)
+ * ```
+ *
+ * @see Interpretation
+ * @see Formula
+ */
 object ModelChecker {
+    /**
+     * Evaluates whether the given [formula] is satisfied under the provided
+     * [interpretation] and variable [assignment].
+     *
+     * Quantifiers (`∀`, `∃`) range over [Interpretation.universe]. Free variables
+     * must be bound in [assignment] or defined as constants in the interpretation;
+     * otherwise an [IllegalStateException] is thrown.
+     *
+     * @param formula The formula to evaluate.
+     * @param interpretation The first-order interpretation providing the domain,
+     *   membership relation, constants, and functions.
+     * @param assignment A map from variable names to their current values in the
+     *   domain. Defaults to an empty map (no free variables).
+     * @return `true` if the formula is satisfied, `false` otherwise.
+     * @throws IllegalStateException if a variable is unbound or a function symbol
+     *   is not defined in the interpretation.
+     */
     fun evaluate(
         formula: Formula,
         interpretation: Interpretation,
@@ -45,4 +83,3 @@ object ModelChecker {
         }
     }
 }
-

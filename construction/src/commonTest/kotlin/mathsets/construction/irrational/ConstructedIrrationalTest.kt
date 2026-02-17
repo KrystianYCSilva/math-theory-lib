@@ -2,28 +2,32 @@ package mathsets.construction.irrational
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import mathsets.construction.real.toMathReal
-import mathsets.kernel.IrrationalNumber
-import mathsets.kernel.RealNumber
+import mathsets.construction.rational.ConstructedRational
+import mathsets.kernel.RationalNumber
 
 class ConstructedIrrationalTest : FunSpec({
-    test("known irrational constants are mapped and preserved") {
-        ConstructedIrrational.PI.toKernel() shouldBe IrrationalNumber.PI
-        ConstructedIrrational.E.toKernel() shouldBe IrrationalNumber.E
+    test("algebraic irrationals expose algebraic foundation") {
+        ConstructedIrrational.SQRT2.foundation shouldBe IrrationalFoundation.ALGEBRAIC_CONSTRUCTION
+        ConstructedIrrational.SQRT3.foundation shouldBe IrrationalFoundation.ALGEBRAIC_CONSTRUCTION
+        ConstructedIrrational.GOLDEN_RATIO.foundation shouldBe IrrationalFoundation.ALGEBRAIC_CONSTRUCTION
+    }
+
+    test("sqrt2 lower cut behaves as expected on basic rationals") {
+        val one = ConstructedRational.fromKernel(RationalNumber.of(1, 1))
+        val two = ConstructedRational.fromKernel(RationalNumber.of(2, 1))
+
+        ConstructedIrrational.SQRT2.lowerCutContains(one) shouldBe true
+        ConstructedIrrational.SQRT2.lowerCutContains(two) shouldBe false
+    }
+
+    test("irrationality witness refutes rational equality candidates") {
+        val threeHalves = ConstructedRational.fromKernel(RationalNumber.of(3, 2))
+        ConstructedIrrational.SQRT2.refutesAsExactRational(threeHalves) shouldBe true
+    }
+
+    test("axiomatic constants are marked and roundtrip through kernel") {
+        ConstructedIrrational.PI.foundation shouldBe IrrationalFoundation.AXIOMATIC_SYMBOL
+        ConstructedIrrational.E.foundation shouldBe IrrationalFoundation.AXIOMATIC_SYMBOL
         ConstructedIrrationalIsomorphism.verifyKnownConstants() shouldBe true
     }
-
-    test("custom symbolic irrational keeps symbol and approximation") {
-        val approximation = RealNumber.parse("2.2360679").toMathReal()
-        val sqrtFive = ConstructedIrrational.of("sqrt(5)", approximation)
-
-        sqrtFive.symbol shouldBe "sqrt(5)"
-        sqrtFive.toKernel().approximation shouldBe RealNumber.parse("2.2360679")
-    }
-
-    test("irrational arithmetic delegates to constructed reals") {
-        val result = ConstructedIrrational.PI + ConstructedIrrational.E
-        result.toKernel() shouldBe (IrrationalNumber.PI.approximation + IrrationalNumber.E.approximation)
-    }
 })
-

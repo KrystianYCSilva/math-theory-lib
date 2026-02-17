@@ -8,40 +8,55 @@ description: |
 
 ## Stack
 
-| Camada | Tecnologia | Versao |
+| Camada | Tecnologia | Versão |
 |--------|------------|--------|
-| Linguagem | Kotlin Multiplatform | 2.x |
+| Linguagem | Kotlin Multiplatform | 2.1.0 |
 | Framework | KMP Standard Lib | - |
-| Build | Gradle KTS | 8.x+ |
-| Testes | Kotest | 5.x |
-| Analise | Detekt | - |
+| Build | Gradle KTS + Version Catalog | 8.x+ |
+| Testes | Kotest (FunSpec + Property) | 5.8.0 |
+| BigNum | com.ionspin.kotlin:bignum | 0.3.10 |
+| Coroutines | kotlinx-coroutines-core | 1.8.0 |
+| Analise | Detekt | 1.23.5 |
+| Docs | Dokka | 1.9.10 |
 
 ## Arquitetura
 
 Arquitetura em 4 camadas rigorosas (Layered Architecture):
-1. **Kernel** (Primitivos computacionais)
-2. **Logic** (Especificações lógicas)
-3. **Set Theory** (Implementação ZFC)
-4. **Construction** (Derivação matemática)
+1. **Kernel** (Primitivos computacionais — value classes sobre BigInteger/BigDecimal)
+2. **Logic** (FOL, axiomas ZFC, PeanoSystem, ModelChecker)
+3. **Set Theory** (MathSet, Relation, Function, Orders)
+4. **Construction & Advanced** (Derivação axiomática ℕ→ℤ→ℚ→ℝ→ℂ, Ordinais, Cardinais, Descriptive, Combinatorics, Forcing)
 
-Dependências apenas para baixo (Construction -> Set -> Logic -> Kernel).
+Dependências apenas para baixo (Construction -> Set/Relation/Function -> Logic -> Kernel).
 
 ## Estrutura de diretorios
 
 ```
 math-theory-lib/
-├── kernel/
-├── logic/
-├── set/
-├── relation/
-├── function/
-├── construction/
-├── ordinal/
-├── cardinal/
-└── examples/
+├── kernel/          # NaturalNumber, IntegerNumber, RationalNumber, RealNumber,
+│                    # ComplexNumber, ImaginaryNumber, IrrationalNumber, ExtendedReal,
+│                    # Cardinality, Predicate, Generator, Arithmetic, analysis/
+├── logic/           # Formula, Term, Axiom, PeanoSystem, ModelChecker, FormulaParser
+├── set/             # MathSet<T>, ExtensionalSet, IntensionalSet, UniversalSets,
+│                    # SetAlgebra, ZFCVerifier, Paradoxes, LazyPowerSet, BitMathSet
+├── relation/        # OrderedPair, Relation, EquivalenceRelation, Partition,
+│                    # PartialOrder, TotalOrder, WellOrder
+├── function/        # MathFunction, Injection, Surjection, Bijection, ChoiceFunction
+├── construction/    # VonNeumannNatural, ConstructedInteger, ConstructedRational,
+│                    # ConstructedReal (Cauchy), ConstructedIrrational, ConstructedComplex
+├── ordinal/         # Ordinal (Finite/CNF), CantorNormalForm, OrdinalArithmetic,
+│                    # TransfiniteRecursion
+├── cardinal/        # Countability (N↔Z, N↔Q), CantorDiagonal, CardinalArithmetic
+├── descriptive/     # FiniteTopology, BorelHierarchy
+├── combinatorics/   # PartitionCalculus, Ramsey, GaleStewartGame
+├── forcing/         # Poset, GenericFilter, ForcingExtension, IndependenceDemo
+└── examples/        # NumberConstructionDemo, ParadoxDemos, KernelAndSetUseCases
 ```
 
 ## Dependencias criticas
 
 - Kotlin Standard Library
-- Kotest (Property-based testing)
+- com.ionspin.kotlin:bignum (BigInteger/BigDecimal multiplataforma)
+- Kotest (FunSpec, assertions, property-based testing)
+- kotlinx-coroutines-core
+- kotlinx-atomicfu

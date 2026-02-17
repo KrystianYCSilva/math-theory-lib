@@ -136,3 +136,20 @@
 - **Validacao:**
   - `:construction:jvmTest :construction:compileKotlinJs`
   - `:examples:jvmTest :examples:compileKotlinJs`
+
+### Refatoracao Rigorosa dos Constructed Analiticos
+- **Data:** 2026-02-17
+- **Escopo:** `construction/real`, `construction/irrational`, `construction/complex`
+- **Mudancas principais:**
+  - `ConstructedReal` migrado para representante explicito de sequencias de Cauchy (termos + modulo), com operacoes definidas no nivel da construcao.
+  - `ConstructedIrrational` com fundamento explicito:
+    - `ALGEBRAIC_CONSTRUCTION` para `sqrt(2)`, `sqrt(3)`, `phi`,
+    - `AXIOMATIC_SYMBOL` para `pi` e `e` (com aproximacao construtiva para interoperabilidade).
+  - `ConstructedImaginary` e `ConstructedComplex` reescritos para aritmetica por componentes `ConstructedReal`, removendo dependencia de `kernelValue` como fonte primária.
+  - Novos mecanismos de verificacao no real construído: aproximacao racional por indice, modulo de Cauchy e checagem finita de Cauchy.
+- **Testes atualizados:**
+  - `ConstructedRealTest` com cobertura de `squareRootOf` e criterio Cauchy.
+  - `ConstructedIrrationalTest` com cortes inferiores e testemunha de nao-racionalidade para irracionais algébricos.
+- **Validacao:**
+  - `:construction:jvmTest :construction:compileKotlinJs`
+  - `:examples:jvmTest :examples:compileKotlinJs`

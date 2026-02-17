@@ -3,6 +3,16 @@ package mathsets.set
 import mathsets.kernel.Cardinality
 import mathsets.kernel.NaturalNumber
 
+/**
+ * A lazy view representing the union of two sets (`left ∪ right`).
+ *
+ * Elements are interleaved from both sides and deduplicated on the fly so that
+ * infinite sequences can be consumed incrementally.
+ *
+ * @param T the element type.
+ * @param left the first operand.
+ * @param right the second operand.
+ */
 internal class UnionSetView<T>(
     private val left: MathSet<T>,
     private val right: MathSet<T>
@@ -18,6 +28,9 @@ internal class UnionSetView<T>(
 
     override fun contains(element: T): Boolean = (element in left) || (element in right)
 
+    /**
+     * Interleaves elements from [left] and [right], yielding each distinct element exactly once.
+     */
     override fun elements(): Sequence<T> = sequence {
         val seen = mutableSetOf<T>()
         val leftIterator = left.elements().iterator()
@@ -34,6 +47,9 @@ internal class UnionSetView<T>(
         }
     }
 
+    /**
+     * @throws InfiniteMaterializationException if either operand is not finite.
+     */
     override fun materialize(): ExtensionalSet<T> {
         if (!left.cardinality.isFinite() || !right.cardinality.isFinite()) {
             throw InfiniteMaterializationException("Cannot materialize union of non-finite sets")
@@ -46,6 +62,16 @@ internal class UnionSetView<T>(
     override fun intersect(other: MathSet<T>): MathSet<T> = IntersectionSetView(this, other)
 }
 
+/**
+ * A lazy view representing the intersection of two sets (`left ∩ right`).
+ *
+ * Enumeration iterates over the finite side (when possible) and retains only
+ * elements present in both operands.
+ *
+ * @param T the element type.
+ * @param left the first operand.
+ * @param right the second operand.
+ */
 internal class IntersectionSetView<T>(
     private val left: MathSet<T>,
     private val right: MathSet<T>
@@ -65,6 +91,9 @@ internal class IntersectionSetView<T>(
         else -> left.elements().filter { it in right }
     }
 
+    /**
+     * @throws InfiniteMaterializationException if both operands are non-finite.
+     */
     override fun materialize(): ExtensionalSet<T> {
         if (!left.cardinality.isFinite() && !right.cardinality.isFinite()) {
             throw InfiniteMaterializationException("Cannot materialize intersection when both sides are non-finite")
@@ -76,4 +105,3 @@ internal class IntersectionSetView<T>(
 
     override fun intersect(other: MathSet<T>): MathSet<T> = IntersectionSetView(this, other)
 }
-

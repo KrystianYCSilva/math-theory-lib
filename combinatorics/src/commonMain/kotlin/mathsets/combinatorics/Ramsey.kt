@@ -1,9 +1,23 @@
 package mathsets.combinatorics
 
 /**
- * Utilidades finitas para Ramsey (k=2).
+ * Finite utilities for Ramsey theory (edge-coloring variant, k=2).
+ *
+ * Ramsey theory studies conditions under which order must appear in combinatorial structures.
+ * The classic result R(s,s) guarantees that any 2-coloring of edges of a sufficiently large
+ * complete graph contains a monochromatic clique of size s.
  */
 object Ramsey {
+    /**
+     * Searches for a monochromatic clique of the given size in a vertex-colored complete graph.
+     *
+     * @param V The vertex type.
+     * @param vertices The set of all vertices.
+     * @param cliqueSize The required clique size (must be at least 2).
+     * @param colorOf A function that returns the color of the edge between two vertices.
+     * @return A monochromatic clique of the requested size, or `null` if none exists.
+     * @throws IllegalArgumentException if [cliqueSize] is less than 2.
+     */
     fun <V> findMonochromaticClique(
         vertices: Set<V>,
         cliqueSize: Int,
@@ -22,7 +36,17 @@ object Ramsey {
     }
 
     /**
-     * Busca o menor n (até maxVertices) tal que n -> (cliqueSize)^2_colors.
+     * Searches for the smallest n (up to [maxVertices]) such that the Erdos-Rado arrow
+     * relation `n -> (cliqueSize)^2_colors` holds.
+     *
+     * This effectively computes a Ramsey number upper bound by brute force.
+     *
+     * @param cliqueSize The required monochromatic clique size (must be at least 2).
+     * @param colors The number of colors (default: 2).
+     * @param maxVertices The maximum number of vertices to search up to (default: 8).
+     * @return The smallest n for which the arrow relation holds, or `null` if not found
+     *         within the search range.
+     * @throws IllegalArgumentException if parameters are out of range.
      */
     fun searchBounds(
         cliqueSize: Int,
@@ -81,4 +105,3 @@ internal fun <T> combinations(items: List<T>, size: Int): List<List<T>> {
     backtrack(0, mutableListOf())
     return result
 }
-

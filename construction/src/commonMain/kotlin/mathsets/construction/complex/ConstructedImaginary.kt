@@ -6,54 +6,52 @@ import mathsets.kernel.ImaginaryNumber
 import mathsets.kernel.MathElement
 
 /**
- * Imaginário puro construído da forma bi, onde b é um real construído.
+ * Imaginário puro construído da forma bi, com b em R construído.
  */
-class ConstructedImaginary private constructor(
-    val coefficient: ConstructedReal,
-    private val kernelValue: ImaginaryNumber
+class ConstructedImaginary(
+    val coefficient: ConstructedReal
 ) : MathElement {
-    fun toKernel(): ImaginaryNumber = kernelValue
+    fun toKernel(): ImaginaryNumber = ImaginaryNumber.of(coefficient.toKernel())
 
     operator fun plus(other: ConstructedImaginary): ConstructedImaginary =
-        fromKernel(kernelValue + other.kernelValue)
+        ConstructedImaginary(coefficient + other.coefficient)
 
     operator fun minus(other: ConstructedImaginary): ConstructedImaginary =
-        fromKernel(kernelValue - other.kernelValue)
+        ConstructedImaginary(coefficient - other.coefficient)
 
-    operator fun unaryMinus(): ConstructedImaginary = fromKernel(-kernelValue)
+    operator fun unaryMinus(): ConstructedImaginary = ConstructedImaginary(-coefficient)
 
     operator fun times(other: ConstructedReal): ConstructedImaginary =
-        fromKernel(kernelValue * other.toKernel())
+        ConstructedImaginary(coefficient * other)
 
     operator fun div(other: ConstructedReal): ConstructedImaginary =
-        fromKernel(kernelValue / other.toKernel())
+        ConstructedImaginary(coefficient / other)
 
     /**
      * (bi) * (di) = -(bd), resultado real.
      */
     infix fun times(other: ConstructedImaginary): ConstructedReal =
-        (kernelValue times other.kernelValue).toMathReal()
+        -(coefficient * other.coefficient)
 
-    fun isZero(): Boolean = kernelValue.isZero()
+    fun isZero(): Boolean = coefficient.isZero()
 
-    fun toComplex(): ConstructedComplex = ConstructedComplex.fromKernel(kernelValue.toComplex())
+    fun toComplex(): ConstructedComplex = ConstructedComplex.fromImaginary(this)
 
     override fun equals(other: Any?): Boolean =
-        other is ConstructedImaginary && kernelValue == other.kernelValue
+        other is ConstructedImaginary && coefficient == other.coefficient
 
-    override fun hashCode(): Int = kernelValue.hashCode()
+    override fun hashCode(): Int = coefficient.hashCode()
 
-    override fun toString(): String = kernelValue.toString()
+    override fun toString(): String = toKernel().toString()
 
     companion object {
-        val ZERO: ConstructedImaginary = fromKernel(ImaginaryNumber.ZERO)
-        val I: ConstructedImaginary = fromKernel(ImaginaryNumber.I)
+        val ZERO: ConstructedImaginary = ConstructedImaginary(ConstructedReal.ZERO)
+        val I: ConstructedImaginary = ConstructedImaginary(ConstructedReal.ONE)
 
-        fun of(coefficient: ConstructedReal): ConstructedImaginary =
-            ConstructedImaginary(coefficient, ImaginaryNumber.of(coefficient.toKernel()))
+        fun of(coefficient: ConstructedReal): ConstructedImaginary = ConstructedImaginary(coefficient)
 
         fun fromKernel(value: ImaginaryNumber): ConstructedImaginary =
-            ConstructedImaginary(value.coefficient.toMathReal(), value)
+            ConstructedImaginary(value.coefficient.toMathReal())
     }
 }
 

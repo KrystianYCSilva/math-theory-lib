@@ -8,7 +8,7 @@ description: |
 
 ## What
 
-mathsets-kt (math-theory-lib) é uma biblioteca Kotlin Multiplatform que implementa computacionalmente a Teoria Axiomática dos Conjuntos (ZFC) e a construção dos conjuntos numéricos (ℕ, ℤ, ℚ).
+mathsets-kt (math-theory-lib) é uma biblioteca Kotlin Multiplatform que implementa computacionalmente a Teoria Axiomática dos Conjuntos (ZFC) e a construção completa da torre numérica (ℕ → ℤ → ℚ → ℝ → ℂ), combinando rigor matemático com engenharia de software.
 
 ## Why
 
@@ -16,9 +16,9 @@ Resolver o "Bootstrap Circular" entre Teoria dos Conjuntos e Teoria dos Números
 
 ## Scope
 
-- **In:** Axiomas ZFC, Lógica de Primeira Ordem, Construção de Von Neumann (ℕ), Construção de ℤ e ℚ, Ordinais, Cardinais.
+- **In:** Axiomas ZFC, Lógica de Primeira Ordem, MathSet (extensional + intensional), Relações (equivalência, ordens parciais/totais/bem-ordenadas), Funções (injeção, surjeção, bijeção, escolha), Construção de Von Neumann (ℕ), Construção de ℤ (pares de ℕ/~), ℚ (pares de ℤ/~), ℝ (sequências de Cauchy), Irracionais (algébricos + axiomáticos), ℂ (pares de ℝ), Ordinais (CNF até ω^ω), Cardinais (ℵ₀, argumento diagonal de Cantor, aritmética cardinal), Topologia finita e hierarquia de Borel, Combinatória (Ramsey, Bell, jogos de Gale-Stewart), Forcing (posets, filtros genéricos, independência de CH).
 - **Out:** Interfaces gráficas complexas (além de demos), suporte a hardware exótico.
 
 ## Status
 
-Planning & Specification (Inception). Código fonte não implementado. Foco em arquitetura e planejamento.
+v1.0 completo (12 módulos implementados e testados). Build JVM e JS verde. Planejamento da expansão v2.0 documentado (algebra, analysis, topology, category, solvers, proof assistants).

@@ -11,6 +11,11 @@ import mathsets.kernel.NaturalNumber
 import mathsets.kernel.RationalNumber
 import mathsets.kernel.RealNumber
 
+/**
+ * The set of natural numbers (`N = {0, 1, 2, ...}`).
+ *
+ * Countably infinite; elements are generated lazily via [Generators.naturals].
+ */
 object Naturals : MathSet<NaturalNumber> {
     override val cardinality: Cardinality = Cardinality.CountablyInfinite
 
@@ -27,6 +32,11 @@ object Naturals : MathSet<NaturalNumber> {
     override fun intersect(other: MathSet<NaturalNumber>): MathSet<NaturalNumber> = IntersectionSetView(this, other)
 }
 
+/**
+ * The set of integers (`Z = {..., -2, -1, 0, 1, 2, ...}`).
+ *
+ * Countably infinite; elements are generated lazily via [Generators.integers].
+ */
 object Integers : MathSet<IntegerNumber> {
     override val cardinality: Cardinality = Cardinality.CountablyInfinite
 
@@ -43,6 +53,11 @@ object Integers : MathSet<IntegerNumber> {
     override fun intersect(other: MathSet<IntegerNumber>): MathSet<IntegerNumber> = IntersectionSetView(this, other)
 }
 
+/**
+ * The set of rational numbers (`Q`).
+ *
+ * Countably infinite; elements are generated lazily via [Generators.rationals].
+ */
 object Rationals : MathSet<RationalNumber> {
     override val cardinality: Cardinality = Cardinality.CountablyInfinite
 
@@ -60,9 +75,10 @@ object Rationals : MathSet<RationalNumber> {
 }
 
 /**
- * Conjunto universal dos reais para o tipo `RealNumber`.
+ * The set of real numbers (`R`).
  *
- * Semântica intencional: não há enumeração computável total de R.
+ * Uncountable; enumeration is not supported and will throw [UnsupportedOperationException].
+ * Membership is determined by type — every [RealNumber] instance belongs to this set.
  */
 object Reals : MathSet<RealNumber> {
     override val cardinality: Cardinality = Cardinality.Uncountable
@@ -83,9 +99,10 @@ object Reals : MathSet<RealNumber> {
 }
 
 /**
- * Conjunto universal dos irracionais simbólicos.
+ * The set of irrational numbers.
  *
- * Observação: a biblioteca modela irracionais via `IrrationalNumber`.
+ * Uncountable; enumeration is not supported. The library models irrationals symbolically
+ * via [IrrationalNumber].
  */
 object Irrationals : MathSet<IrrationalNumber> {
     override val cardinality: Cardinality = Cardinality.Uncountable
@@ -106,7 +123,9 @@ object Irrationals : MathSet<IrrationalNumber> {
 }
 
 /**
- * Conjunto universal dos imaginários puros.
+ * The set of pure imaginary numbers.
+ *
+ * Uncountable; enumeration is not supported.
  */
 object Imaginaries : MathSet<ImaginaryNumber> {
     override val cardinality: Cardinality = Cardinality.Uncountable
@@ -127,7 +146,9 @@ object Imaginaries : MathSet<ImaginaryNumber> {
 }
 
 /**
- * Conjunto universal dos complexos.
+ * The set of complex numbers (`C`).
+ *
+ * Uncountable; enumeration is not supported.
  */
 object Complexes : MathSet<ComplexNumber> {
     override val cardinality: Cardinality = Cardinality.Uncountable
@@ -148,7 +169,9 @@ object Complexes : MathSet<ComplexNumber> {
 }
 
 /**
- * Conjunto universal da reta real estendida (R U {-infinity, +infinity}).
+ * The extended real line (`R ∪ {-∞, +∞}`).
+ *
+ * Uncountable; enumeration is not supported.
  */
 object ExtendedReals : MathSet<ExtendedReal> {
     override val cardinality: Cardinality = Cardinality.Uncountable

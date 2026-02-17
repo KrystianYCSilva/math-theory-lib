@@ -3,7 +3,14 @@ package mathsets.ordinal
 import mathsets.kernel.NaturalNumber
 
 /**
- * Termo de Cantor (coeficiente * ω^exponente), com coeficiente > 0.
+ * Represents a single term in a Cantor Normal Form expression: `coefficient * omega^exponent`.
+ *
+ * Each term has a positive coefficient and a non-negative exponent. Terms are the building
+ * blocks of [CantorNormalForm].
+ *
+ * @property exponent The power of omega in this term.
+ * @property coefficient The positive natural number coefficient (must be > 0).
+ * @throws IllegalArgumentException if [coefficient] is zero.
  */
 data class CNFTerm(
     val exponent: NaturalNumber,
@@ -15,7 +22,18 @@ data class CNFTerm(
 }
 
 /**
- * Forma normal de Cantor para ordinais com expoentes finitos.
+ * Represents an ordinal in Cantor Normal Form (CNF).
+ *
+ * Every ordinal alpha > 0 can be uniquely written as:
+ *
+ *     omega^a1 * c1 + omega^a2 * c2 + ... + omega^ak * ck
+ *
+ * where a1 > a2 > ... > ak >= 0 and each ci > 0.
+ *
+ * This class enforces that [terms] is non-empty and that exponents are strictly descending.
+ *
+ * @property terms The list of CNF terms in strictly descending order of exponents.
+ * @throws IllegalArgumentException if [terms] is empty or exponents are not strictly descending.
  */
 @ConsistentCopyVisibility
 data class CantorNormalForm private constructor(
@@ -31,6 +49,16 @@ data class CantorNormalForm private constructor(
     }
 
     companion object {
+        /**
+         * Creates a [CantorNormalForm] from the given terms after normalization.
+         *
+         * Terms are sorted by descending exponent and terms with equal exponents are
+         * merged by summing their coefficients.
+         *
+         * @param terms The raw list of CNF terms.
+         * @return A normalized Cantor Normal Form.
+         * @throws IllegalArgumentException if the normalized list is empty (i.e., represents zero).
+         */
         fun of(terms: List<CNFTerm>): CantorNormalForm {
             val normalized = normalizeTerms(terms)
             require(normalized.isNotEmpty()) { "CantorNormalForm cannot represent zero." }

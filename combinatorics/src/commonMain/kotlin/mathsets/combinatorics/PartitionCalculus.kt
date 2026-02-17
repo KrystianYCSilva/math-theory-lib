@@ -3,9 +3,24 @@ package mathsets.combinatorics
 import mathsets.kernel.NaturalNumber
 
 /**
- * Utilidades de cálculo de partições e relação de Erdős-Rado (versão finita).
+ * Utilities for partition calculus and the finite Erdos-Rado arrow relation.
+ *
+ * Provides enumeration of all set partitions, Bell number computation, and
+ * brute-force verification of the Erdos-Rado arrow notation `n -> (m)^k_c`,
+ * which asserts that for every c-coloring of k-element subsets of an n-element set,
+ * there exists a monochromatic m-element subset.
  */
 object PartitionCalculus {
+    /**
+     * Enumerates all partitions of the given set of elements.
+     *
+     * A partition of a set S is a collection of non-empty, pairwise disjoint subsets
+     * whose union is S.
+     *
+     * @param T The element type.
+     * @param elements The set to partition.
+     * @return The set of all possible partitions of [elements].
+     */
     fun <T> allPartitions(elements: Set<T>): Set<Set<Set<T>>> {
         if (elements.isEmpty()) return setOf(emptySet())
 
@@ -31,13 +46,32 @@ object PartitionCalculus {
         return result
     }
 
+    /**
+     * Computes the Bell number B(n), which counts the number of partitions of
+     * an n-element set.
+     *
+     * @param n The size of the set (must be non-negative).
+     * @return The Bell number B(n) as a [NaturalNumber].
+     * @throws IllegalArgumentException if [n] is negative.
+     */
     fun bellNumber(n: Int): NaturalNumber {
         require(n >= 0) { "n must be non-negative." }
         return NaturalNumber.of(allPartitions((0 until n).toSet()).size)
     }
 
     /**
-     * Verifica finitamente n -> (monochromaticSize)^subsetSize_colors.
+     * Verifies the finite Erdos-Rado arrow relation: `n -> (monochromaticSize)^subsetSize_colors`.
+     *
+     * This checks by brute force that for every coloring of [subsetSize]-element subsets
+     * of `{0, ..., n-1}` using [colors] colors, there exists a monochromatic subset
+     * of size [monochromaticSize].
+     *
+     * @param n The size of the ground set.
+     * @param monochromaticSize The required size of the monochromatic subset.
+     * @param subsetSize The size of subsets being colored (default: 2, i.e., edges).
+     * @param colors The number of colors (default: 2).
+     * @return `true` if the arrow relation holds, `false` if a counterexample exists.
+     * @throws IllegalArgumentException if parameters are out of range or search space is too large.
      */
     fun erdosRadoArrow(
         n: Int,
