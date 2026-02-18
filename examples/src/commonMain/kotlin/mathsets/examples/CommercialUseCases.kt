@@ -24,17 +24,40 @@ import mathsets.set.ExtensionalSet
 import mathsets.set.MathSet
 import mathsets.set.mathSetOf
 
+/**
+ * Commercial and enterprise use cases demonstrating how mathematical abstractions from
+ * the library can be applied to real-world software engineering problems.
+ *
+ * Covers RBAC access control, credit scoring, dependency resolution, data deduplication,
+ * A/B testing, financial calculations, feature flags, load balancing, backlog prioritization,
+ * pricing game theory, schema mapping, data validation, workflow engines, set-based queries,
+ * and permission auditing.
+ */
 object CommercialUseCases {
 
-    // ═════════════════════════════════════════════════════════
-    // 1. RBAC — CONTROLE DE ACESSO BASEADO EM PAPÉIS
-    //    Modelar permissões como relações e verificar acesso
-    //    via lógica de primeira ordem
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Represents an access request with its grant/deny result.
+     *
+     * @property user The user requesting access.
+     * @property resource The resource being accessed.
+     * @property granted Whether access was granted.
+     */
     data class AccessRequest(val user: String, val resource: String, val granted: Boolean)
 
+    /**
+     * Role-Based Access Control engine that evaluates permissions using set-theoretic relations.
+     */
     object RBACEngine {
+        /**
+         * Builds an access evaluation function from user-role and role-permission mappings.
+         *
+         * @param users The set of all users.
+         * @param roles The set of all roles.
+         * @param resources The set of all resources.
+         * @param userRoles A mapping from each user to their assigned roles.
+         * @param rolePermissions A mapping from each role to its permitted resources.
+         * @return A function that takes (user, resource) and returns whether access is granted.
+         */
         fun evaluate(
             users: Set<String>,
             roles: Set<String>,
@@ -50,6 +73,14 @@ object CommercialUseCases {
             }
         }
 
+        /**
+         * Checks for segregation-of-duties violations: users holding conflicting role pairs.
+         *
+         * @param users The set of all users.
+         * @param userRoles A mapping from each user to their assigned roles.
+         * @param conflictingPairs Pairs of roles that should not be held simultaneously.
+         * @return A list of users who violate at least one segregation-of-duties constraint.
+         */
         fun verifySegregationOfDuties(
             users: Set<String>,
             userRoles: Map<String, Set<String>>,
@@ -61,6 +92,13 @@ object CommercialUseCases {
             }
         }
 
+        /**
+         * Finds resources not covered by any role's permissions.
+         *
+         * @param resources The set of all resources.
+         * @param rolePermissions A mapping from each role to its permitted resources.
+         * @return The set of uncovered resources.
+         */
         fun verifyCompleteCoverage(
             resources: Set<String>,
             rolePermissions: Map<String, Set<String>>
@@ -70,11 +108,15 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 2. MOTOR DE REGRAS DE NEGÓCIO
-    //    Predicados compostos para aprovação de crédito
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * A credit application with financial attributes for rule evaluation.
+     *
+     * @property name The applicant's name.
+     * @property income The annual income.
+     * @property score The credit score.
+     * @property hasCollateral Whether the applicant has collateral.
+     * @property debtRatio The debt-to-income ratio.
+     */
     data class CreditApplication(
         val name: String,
         val income: Int,
@@ -83,6 +125,12 @@ object CommercialUseCases {
         val debtRatio: Double
     )
 
+    /**
+     * Credit approval rule engine using composed predicates.
+     *
+     * Combines income, score, debt ratio, and collateral checks into approval tiers
+     * (PREMIUM, STANDARD, COLLATERAL, DENIED) using logical predicate composition.
+     */
     object CreditRuleEngine {
         private val highIncome: Predicate<CreditApplication> = { it.income >= 80000 }
         private val goodScore: Predicate<CreditApplication> = { it.score >= 700 }
@@ -90,20 +138,31 @@ object CommercialUseCases {
         private val lowDebt: Predicate<CreditApplication> = { it.debtRatio < 0.4 }
         private val hasCollateral: Predicate<CreditApplication> = { it.hasCollateral }
 
+        /** Predicate for standard approval: high income AND good score AND low debt. */
         val standardApproval: Predicate<CreditApplication> =
             (highIncome and goodScore) and lowDebt
 
+        /** Predicate for premium approval: excellent score AND low debt. */
         val premiumApproval: Predicate<CreditApplication> =
             excellentScore and lowDebt
 
+        /** Predicate for collateral-backed approval: has collateral AND good score. */
         val collateralOverride: Predicate<CreditApplication> =
             hasCollateral and goodScore
 
+        /** Predicate that matches any approval tier. */
         val anyApproval: Predicate<CreditApplication> =
             standardApproval or premiumApproval or collateralOverride
 
+        /** Predicate for denial: the negation of any approval. */
         val denial: Predicate<CreditApplication> = anyApproval.not()
 
+        /**
+         * Evaluates a credit application and returns the approval tier.
+         *
+         * @param app The credit application to evaluate.
+         * @return One of "PREMIUM", "STANDARD", "COLLATERAL", or "DENIED".
+         */
         fun evaluate(app: CreditApplication): String = when {
             premiumApproval(app) -> "PREMIUM"
             standardApproval(app) -> "STANDARD"
@@ -112,12 +171,20 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 3. DEPENDENCY RESOLVER — ORDENAÇÃO TOPOLÓGICA DE PACOTES
-    //    Usando PartialOrder para resolver dependências de build
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Topological dependency resolver using partial orders.
+     *
+     * Resolves build dependencies by constructing a transitive closure of the dependency
+     * graph and iteratively extracting minimal elements.
+     */
     object DependencyResolver {
+        /**
+         * Resolves package dependencies into a topological build order.
+         *
+         * @param packages The list of package names.
+         * @param dependencies Pairs (a, b) meaning "a must come before b".
+         * @return A topologically sorted list of package names.
+         */
         fun resolve(
             packages: List<String>,
             dependencies: List<Pair<String, String>>
@@ -176,14 +243,29 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 4. DATA DEDUPLICATION — EQUIVALÊNCIA FUZZY DE REGISTROS
-    //    Encontrar duplicatas usando relação de equivalência
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * A customer record for deduplication.
+     *
+     * @property id The unique record ID.
+     * @property name The customer name.
+     * @property email The customer email.
+     */
     data class CustomerRecord(val id: Int, val name: String, val email: String)
 
+    /**
+     * Data deduplication engine using equivalence relations.
+     *
+     * Groups records into duplicate clusters based on a user-defined similarity predicate,
+     * modeled as an equivalence relation and partitioned into equivalence classes.
+     */
     object DataDeduplicator {
+        /**
+         * Finds groups of duplicate records based on the given similarity predicate.
+         *
+         * @param records The list of customer records.
+         * @param areSame A predicate determining if two records are duplicates.
+         * @return A list of duplicate groups (groups with more than one record).
+         */
         fun findDuplicateGroups(
             records: List<CustomerRecord>,
             areSame: (CustomerRecord, CustomerRecord) -> Boolean
@@ -205,12 +287,18 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 5. A/B TEST ALLOCATION — BIJEÇÃO PARA ASSIGNMENT DETERMINISTICO
-    //    Mapear usuários a variantes de teste de forma reversível
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * A/B test allocator using bijections for deterministic, reversible user assignment.
+     */
     object ABTestAllocator {
+        /**
+         * Allocates users to test variants in a round-robin fashion.
+         *
+         * @param U The user type.
+         * @param users The list of users to allocate.
+         * @param variants The list of variant names.
+         * @return A map from each user to their assigned variant.
+         */
         fun <U> allocate(
             users: List<U>,
             variants: List<String>
@@ -221,6 +309,13 @@ object CommercialUseCases {
             }.toMap()
         }
 
+        /**
+         * Creates a bijection between user IDs and variant IDs for a same-size cohort.
+         *
+         * @param userIds The list of user IDs.
+         * @param variantIds The list of variant IDs (must have same size as [userIds]).
+         * @return A [Bijection] from user IDs to variant IDs, or `null` if sizes differ.
+         */
         fun createBijectionForCohort(
             userIds: List<Int>,
             variantIds: List<String>
@@ -237,12 +332,17 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 6. FINANCIAL ROUNDING — ARITMÉTICA EXATA COM RACIONAIS
-    //    Divisão de valores monetários sem perda por float
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Financial calculator using exact rational arithmetic to avoid floating-point errors.
+     */
     object FinancialCalculator {
+        /**
+         * Splits a bill evenly among parties using exact rational division.
+         *
+         * @param totalCents The total amount in cents.
+         * @param parties The number of parties (must be positive).
+         * @return A list of equal rational shares.
+         */
         fun splitBill(totalCents: Int, parties: Int): List<RationalNumber> {
             require(parties > 0)
             val total = RationalNumber.of(totalCents, 1)
@@ -251,6 +351,14 @@ object CommercialUseCases {
             return List(parties) { share }
         }
 
+        /**
+         * Computes compound interest using exact rational arithmetic.
+         *
+         * @param principal The initial amount.
+         * @param ratePercent The interest rate as a percentage (e.g., 5 for 5%).
+         * @param periods The number of compounding periods.
+         * @return The final amount after compounding.
+         */
         fun compoundInterest(
             principal: RationalNumber,
             ratePercent: RationalNumber,
@@ -264,6 +372,13 @@ object CommercialUseCases {
             return result
         }
 
+        /**
+         * Verifies that splitting a bill and summing the shares yields exactly the original total.
+         *
+         * @param totalCents The total amount in cents.
+         * @param parties The number of parties.
+         * @return `true` if the sum of shares equals the total (always true with exact rationals).
+         */
         fun verifySplitIsExact(totalCents: Int, parties: Int): Boolean {
             val shares = splitBill(totalCents, parties)
             val sum = shares.fold(RationalNumber.ZERO) { acc, r -> acc + r }
@@ -271,11 +386,15 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 7. FEATURE FLAG LOGIC — PREDICADOS COMPOSTOS PARA FEATURE TOGGLES
-    //    Composição segura de condições para rollout de features
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * User context for feature flag evaluation.
+     *
+     * @property userId The user's unique identifier.
+     * @property country The user's country code.
+     * @property isPremium Whether the user has a premium subscription.
+     * @property betaOptIn Whether the user opted into beta features.
+     * @property appVersion The user's application version number.
+     */
     data class UserContext(
         val userId: String,
         val country: String,
@@ -284,7 +403,17 @@ object CommercialUseCases {
         val appVersion: Int
     )
 
+    /**
+     * Feature flag engine using composed predicates for safe feature rollout.
+     */
     object FeatureFlagEngine {
+        /**
+         * Builds a named feature flag from one or more predicate rules (OR-composed).
+         *
+         * @param name The feature flag name.
+         * @param rules The predicate rules; the flag is enabled if any rule matches.
+         * @return A pair of (name, combined predicate).
+         */
         fun buildFlag(
             name: String,
             vararg rules: Predicate<UserContext>
@@ -293,6 +422,13 @@ object CommercialUseCases {
             return name to combined
         }
 
+        /**
+         * Evaluates all feature flags for a given user context.
+         *
+         * @param context The user context to evaluate against.
+         * @param flags The list of feature flags.
+         * @return A map from flag name to whether it is enabled.
+         */
         fun evaluate(
             context: UserContext,
             flags: List<Pair<String, Predicate<UserContext>>>
@@ -300,20 +436,34 @@ object CommercialUseCases {
             return flags.associate { (name, predicate) -> name to predicate(context) }
         }
 
+        /** Predicate matching premium users only. */
         val premiumOnly: Predicate<UserContext> = { it.isPremium }
+        /** Predicate matching users who opted into beta. */
         val betaUsers: Predicate<UserContext> = { it.betaOptIn }
+        /** Predicate matching users in Brazil. */
         val brazilOnly: Predicate<UserContext> = { it.country == "BR" }
+        /** Predicate matching users on app version 50 or later. */
         val recentVersion: Predicate<UserContext> = { it.appVersion >= 50 }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 8. LOAD BALANCER — CHOICE FUNCTION PARA SELEÇÃO DE SERVIDOR
-    //    Axioma da Escolha aplicado a alocação de recursos
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * A server with an identifier and current load metric.
+     *
+     * @property id The server identifier.
+     * @property load The current load (lower is better).
+     */
     data class Server(val id: String, val load: Int)
 
+    /**
+     * Load balancer using the Axiom of Choice to select one server from each pool.
+     */
     object LoadBalancer {
+        /**
+         * Selects one server from each pool using a choice function.
+         *
+         * @param pools A list of server pools (each pool is a non-empty list of servers).
+         * @return A map from pool labels ("pool-0", "pool-1", ...) to the selected server.
+         */
         fun selectServers(
             pools: List<List<Server>>
         ): Map<String, Server> {
@@ -327,16 +477,32 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 9. TASK PRIORITIZATION — WELL-ORDERING DE BACKLOG
-    //    Ordem total sobre tickets para sprint planning
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * A backlog ticket with priority and effort attributes.
+     *
+     * @property id The ticket identifier.
+     * @property priority The priority level (higher is more important).
+     * @property effort The estimated effort (lower is preferred).
+     */
     data class Ticket(val id: String, val priority: Int, val effort: Int) {
+        /**
+         * Computes a composite score for prioritization (higher is better).
+         *
+         * @return The priority score.
+         */
         fun score(): Int = priority * 100 - effort
     }
 
+    /**
+     * Backlog prioritizer using total orders (well-orderings) for sprint planning.
+     */
     object BacklogPrioritizer {
+        /**
+         * Prioritizes tickets by constructing a total order based on their composite score.
+         *
+         * @param tickets The list of tickets to prioritize.
+         * @return The tickets sorted in priority order (highest score first).
+         */
         fun prioritize(tickets: List<Ticket>): List<Ticket> {
             val sorted = tickets.sortedByDescending { it.score() }
             val universe = mathSetOf(sorted)
@@ -354,12 +520,19 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 10. PRICING STRATEGY — GAME THEORY PARA DECISÃO DE PREÇO
-    //     Modelar competição de preços como jogo de Gale-Stewart
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Pricing strategy engine using Gale-Stewart game theory for competitive price decisions.
+     */
     object PricingGame {
+        /**
+         * Finds the optimal pricing strategy by modeling competition as a Gale-Stewart game.
+         *
+         * @param ourOptions Our available price points.
+         * @param competitorOptions The competitor's available price points.
+         * @param horizon The number of pricing rounds.
+         * @param weWinIf A payoff function that returns `true` if we win given the move history.
+         * @return A [Triple] of (we have a winning strategy, best opening move or null, minimax outcome).
+         */
         fun findOptimalStrategy(
             ourOptions: List<Int>,
             competitorOptions: List<Int>,
@@ -378,12 +551,20 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 11. SCHEMA MAPPING — BIJEÇÃO ENTRE SCHEMAS DE DADOS
-    //     Transformação reversível de modelos de dados
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Schema mapper using bijections for reversible data model transformations.
+     */
     object SchemaMapper {
+        /**
+         * Creates a bijective mapping between source and target schema fields.
+         *
+         * @param A The source field type.
+         * @param B The target field type.
+         * @param sourceFields The list of source fields.
+         * @param targetFields The list of target fields (must have same size).
+         * @param transform The transformation function from source to target fields.
+         * @return A [Bijection] between fields, or `null` if sizes differ or bijection fails.
+         */
         fun <A, B> createMapping(
             sourceFields: List<A>,
             targetFields: List<B>,
@@ -399,17 +580,32 @@ object CommercialUseCases {
             }
         }
 
+        /**
+         * Performs a round-trip: maps a value forward and then back via the inverse.
+         *
+         * @param A The source type.
+         * @param B The target type.
+         * @param mapping The bijective mapping.
+         * @param value The value to round-trip.
+         * @return The original value after forward and inverse mapping.
+         */
         fun <A, B> roundTrip(mapping: Bijection<A, B>, value: A): A {
             return mapping.inverse()(mapping(value))
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 12. DATA VALIDATION — FOL PARA INVARIANTES DE DADOS
-    //     Verificar constraints complexas sobre datasets
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Data validation engine using first-order logic for complex dataset invariants.
+     */
     object DataValidator {
+        /**
+         * Verifies referential integrity: every order references a valid customer.
+         *
+         * @param orders The set of order IDs.
+         * @param customers The set of customer IDs.
+         * @param orderToCustomer A mapping from order ID to customer ID.
+         * @return `true` if every order's customer exists in the customer set.
+         */
         fun verifyReferentialIntegrity(
             orders: Set<Int>,
             customers: Set<Int>,
@@ -449,6 +645,13 @@ object CommercialUseCases {
             }
         }
 
+        /**
+         * Verifies that a key extractor produces unique keys for all records.
+         *
+         * @param records The set of records.
+         * @param keyExtractor A function extracting the key from each record.
+         * @return `true` if all extracted keys are unique.
+         */
         fun verifyUniqueness(
             records: Set<String>,
             keyExtractor: (String) -> String
@@ -458,12 +661,17 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 13. WORKFLOW ENGINE — ESTADOS COMO ORDEM PARCIAL
-    //     Verificar que transições de workflow respeitam a ordem
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Workflow engine modeling state transitions as a partial order.
+     */
     object WorkflowEngine {
+        /**
+         * Builds a workflow as a partial order from states and transitions.
+         *
+         * @param states The list of workflow state names.
+         * @param transitions Pairs (from, to) defining valid state transitions.
+         * @return A [PartialOrder] representing the workflow.
+         */
         fun buildWorkflow(
             states: List<String>,
             transitions: List<Pair<String, String>>
@@ -478,6 +686,14 @@ object CommercialUseCases {
             return PartialOrder(universe, relation)
         }
 
+        /**
+         * Checks whether a state transition is valid in the workflow.
+         *
+         * @param workflow The workflow partial order.
+         * @param from The source state.
+         * @param to The target state.
+         * @return `true` if the transition from [from] to [to] is valid.
+         */
         fun isValidTransition(
             workflow: PartialOrder<String>,
             from: String,
@@ -495,10 +711,22 @@ object CommercialUseCases {
             }
         }
 
+        /**
+         * Returns the initial (minimal) states of the workflow.
+         *
+         * @param workflow The workflow partial order.
+         * @return The list of initial states.
+         */
         fun initialStates(workflow: PartialOrder<String>): List<String> {
             return workflow.minimals().elements().toList()
         }
 
+        /**
+         * Returns the terminal (maximal) states of the workflow.
+         *
+         * @param workflow The workflow partial order.
+         * @return The list of terminal states.
+         */
         fun terminalStates(workflow: PartialOrder<String>): List<String> {
             return workflow.maximals().elements().toList()
         }
@@ -527,14 +755,29 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 14. SET-BASED QUERY ENGINE — ÁLGEBRA DE CONJUNTOS PARA QUERIES
-    //     Modelar filtros e junções como operações sobre MathSet
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * A product with category, price, and stock attributes.
+     *
+     * @property id The product ID.
+     * @property category The product category.
+     * @property price The product price.
+     * @property inStock Whether the product is in stock.
+     */
     data class Product(val id: Int, val category: String, val price: Int, val inStock: Boolean)
 
+    /**
+     * Set-based query engine using set algebra (union, intersection, difference) for filtering.
+     */
     object SetQueryEngine {
+        /**
+         * Queries products by optional category, price, and stock filters using set operations.
+         *
+         * @param products The list of all products.
+         * @param categories Optional set of categories to filter by.
+         * @param maxPrice Optional maximum price filter.
+         * @param onlyInStock If `true`, only return in-stock products.
+         * @return The filtered list of products.
+         */
         fun query(
             products: List<Product>,
             categories: Set<String>? = null,
@@ -559,6 +802,13 @@ object CommercialUseCases {
             return result.elements().toList()
         }
 
+        /**
+         * Computes the intersection of two product lists.
+         *
+         * @param list1 The first product list.
+         * @param list2 The second product list.
+         * @return Products present in both lists.
+         */
         fun intersection(
             list1: List<Product>,
             list2: List<Product>
@@ -568,6 +818,13 @@ object CommercialUseCases {
             return (set1 intersect set2).elements().toList()
         }
 
+        /**
+         * Computes the set difference: all products minus excluded ones.
+         *
+         * @param all The full product list.
+         * @param exclude Products to exclude.
+         * @return Products in [all] but not in [exclude].
+         */
         fun difference(
             all: List<Product>,
             exclude: List<Product>
@@ -578,12 +835,18 @@ object CommercialUseCases {
         }
     }
 
-    // ═════════════════════════════════════════════════════════
-    // 15. PERMISSION MATRIX — PRODUTO CARTESIANO PARA AUDITORIA
-    //     Gerar todas as combinações papel×recurso para revisão
-    // ═════════════════════════════════════════════════════════
-
+    /**
+     * Permission auditor using Cartesian products for comprehensive role-resource review.
+     */
     object PermissionAuditor {
+        /**
+         * Generates a full audit matrix of all role-resource permission combinations.
+         *
+         * @param roles The list of roles to audit.
+         * @param resources The list of resources to audit.
+         * @param isGranted A function that returns whether a role has access to a resource.
+         * @return A list of (role, resource, granted) triples.
+         */
         fun generateAuditMatrix(
             roles: List<String>,
             resources: List<String>,
@@ -598,6 +861,13 @@ object CommercialUseCases {
             }.toList()
         }
 
+        /**
+         * Finds roles with an excessive number of granted permissions.
+         *
+         * @param matrix The audit matrix generated by [generateAuditMatrix].
+         * @param maxPerRole The maximum allowed permissions per role.
+         * @return A map from role name to permission count for roles exceeding the limit.
+         */
         fun findExcessivePermissions(
             matrix: List<Triple<String, String, Boolean>>,
             maxPerRole: Int

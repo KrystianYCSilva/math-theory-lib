@@ -8,15 +8,28 @@ import mathsets.kernel.toExtendedReal
 import mathsets.set.MathSet
 import mathsets.set.mathSetOf
 
+/**
+ * Basic use cases demonstrating the kernel and set modules.
+ *
+ * Covers extended real arithmetic, complex numbers, set partitioning,
+ * and bijection round-trips.
+ */
 object KernelAndSetUseCases {
     /**
-     * Caso de uso base para análise: comportamento de 1/x com suporte a infinito.
+     * Computes the reciprocal 1/x using extended real arithmetic, supporting infinity.
+     *
+     * @param value The real number to take the reciprocal of.
+     * @return The reciprocal as an [ExtendedReal] (may be +infinity or -infinity).
      */
     fun reciprocal(value: RealNumber): ExtendedReal = ExtendedReal.ONE / value.toExtendedReal()
 
     /**
-     * f(x) = x^2 em quociente de diferenças com suporte a x = 0.
-     * Para x = 0, retorna indeterminate (0/0).
+     * Computes the difference quotient (delta^2 - 0) / delta for f(x) = x^2 at x = 0.
+     *
+     * For delta = 0, this returns an indeterminate form (0/0).
+     *
+     * @param delta The step size.
+     * @return The difference quotient as an [ExtendedReal].
      */
     fun squareDifferenceQuotient(delta: RealNumber): ExtendedReal {
         val numerator = (delta * delta) - RealNumber.ZERO
@@ -24,13 +37,18 @@ object KernelAndSetUseCases {
     }
 
     /**
-     * Raízes complexas de x^2 + 1 = 0.
+     * Returns the two complex roots of x^2 + 1 = 0, namely i and -i.
+     *
+     * @return A [Pair] of the two roots.
      */
     fun rootsOfXSquarePlusOne(): Pair<ComplexNumber, ComplexNumber> =
         Pair(ComplexNumber.I, -ComplexNumber.I)
 
     /**
-     * Particiona um conjunto finito em pares e ímpares.
+     * Partitions a collection of integers into even and odd subsets.
+     *
+     * @param values The integers to partition.
+     * @return A [Pair] of (evens, odds) as [MathSet]s.
      */
     fun partitionByParity(values: Iterable<Int>): Pair<MathSet<Int>, MathSet<Int>> {
         val base = mathSetOf(values)
@@ -40,7 +58,12 @@ object KernelAndSetUseCases {
     }
 
     /**
-     * Exemplo mínimo de roundtrip em uma bijeção finita.
+     * Demonstrates a bijection round-trip: applies a bijection and then its inverse.
+     *
+     * Maps {1,2,3} to {"a","b","c"} and verifies that inverse(f(input)) == input.
+     *
+     * @param input An integer in {1, 2, 3}.
+     * @return The original input after the round-trip.
      */
     fun bijectionRoundTrip(input: Int): Int {
         val domain = mathSetOf(1, 2, 3)
@@ -58,4 +81,3 @@ object KernelAndSetUseCases {
         return bijection.inverse()(bijection(input))
     }
 }
-

@@ -29,15 +29,30 @@ import mathsets.set.MathSet
 import mathsets.set.ZFCVerifier
 import mathsets.set.mathSetOf
 
+/**
+ * Advanced use cases demonstrating the full breadth of the math-theory-lib,
+ * from equivalence relations and first-order logic to ordinal arithmetic,
+ * game theory, topology, and forcing.
+ */
 object AdvancedUseCases {
 
-    // ─────────────────────────────────────────────────────────
-    // 1. CLASSIFICAÇÃO POR EQUIVALÊNCIA
-    //    Agrupar alunos por faixa de nota usando relação de equivalência
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * A student with a name and numeric grade.
+     *
+     * @property name The student's name.
+     * @property grade The student's grade (0-100).
+     */
     data class Student(val name: String, val grade: Int)
 
+    /**
+     * Classifies students into grade range groups using an equivalence relation.
+     *
+     * Students in the same grade range (A: 90-100, B: 80-89, C: 70-79, D: <70) are
+     * grouped into equivalence classes, then returned as a labeled map.
+     *
+     * @param students The list of students to classify.
+     * @return A map from grade range labels to lists of students in that range.
+     */
     fun classifyStudentsByGrade(students: List<Student>): Map<String, List<Student>> {
         val universe = mathSetOf(students)
         val sameRange: (Student, Student) -> Boolean = { a, b ->
@@ -66,11 +81,14 @@ object AdvancedUseCases {
         else -> "D (<70)"
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 2. VERIFICAÇÃO DE PROPRIEDADES COM LÓGICA DE PRIMEIRA ORDEM
-    //    "Todo gerente deve ser certificado" — verificado sobre modelo finito
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Verifies a database constraint using first-order logic: "every manager must be certified."
+     *
+     * Builds a finite interpretation over employees and checks the universal formula
+     * using [ModelChecker].
+     *
+     * @return `true` if all managers are certified.
+     */
     fun verifyDatabaseConstraint(): Boolean {
         val employees = setOf<Any?>(1, 2, 3, 4, 5)
         val managers = setOf(3, 5)
@@ -95,11 +113,13 @@ object AdvancedUseCases {
         return ModelChecker.evaluate(constraint, interpretation)
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 3. SCHEDULING COM ORDEM TOTAL
-    //    Definir dependências entre tarefas e encontrar a primeira
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Demonstrates task scheduling using a total order on task names.
+     *
+     * Defines dependencies among tasks and finds the minimum (first) task.
+     *
+     * @return A [Pair] of the minimum task and the set of tasks that can run after "compile".
+     */
     fun taskScheduling(): Pair<String?, MathSet<String>> {
         val tasks = mathSetOf("compile", "test", "deploy", "docs")
         val deps = listOf(
@@ -122,10 +142,14 @@ object AdvancedUseCases {
         return Pair(first, canRunAfterCompile)
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 4. AXIOMA DA ESCOLHA — ELEGER DELEGADOS DE TURMA
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Elects one delegate from each class using the Axiom of Choice.
+     *
+     * Applies a [ChoiceFunction] to a family of non-empty sets (classes) and
+     * returns the chosen delegate for each.
+     *
+     * @return A map from class labels to chosen delegate names.
+     */
     fun electClassDelegates(): Map<String, String> {
         val classA: MathSet<String> = mathSetOf("Alice", "Bob")
         val classB: MathSet<String> = mathSetOf("Carol", "Dave")
@@ -145,10 +169,11 @@ object AdvancedUseCases {
         }.toMap()
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 5. CANTOR DIAGONAL — PROVAR QUE NÃO EXISTE SURJEÇÃO S → P(S)
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Demonstrates Cantor's diagonal argument: verifies that no surjection S -> P(S) exists.
+     *
+     * @return `true` if the diagonal set is not in the image (confirming non-surjectivity).
+     */
     fun cantorDiagonalDemo(): Boolean {
         val domain = mathSetOf(1, 2, 3)
         val mapping: (Int) -> MathSet<Int> = { x ->
@@ -162,11 +187,14 @@ object AdvancedUseCases {
         return CantorDiagonal.verifyNotSurjective(domain, mapping)
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 6. TEORIA DE JOGOS — NIM SIMPLIFICADO VIA GALE-STEWART
-    //    3 turnos, movimentos {1,2}, P1 ganha se soma >= 4
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Analyzes a simplified Nim game using the Gale-Stewart framework.
+     *
+     * 3 turns, moves {1, 2}, Player I wins if the sum of moves >= 4.
+     *
+     * @return A [Triple] of (Player I has winning strategy, Player II has winning strategy,
+     *         best opening move for Player I or null).
+     */
     fun nimGameAnalysis(): Triple<Boolean, Boolean, Int?> {
         val game = GaleStewartGame(
             legalMoves = listOf(1, 2),
@@ -179,18 +207,22 @@ object AdvancedUseCases {
         return Triple(p1Wins, p2Wins, bestOpening)
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 7. RAMSEY — "PARTY PROBLEM": R(3,3) = 6
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Solves the "party problem" R(3,3) = 6 using Ramsey number search.
+     *
+     * @return The smallest n such that any 2-coloring of edges of K_n contains
+     *         a monochromatic triangle, or `null` if not found within bounds.
+     */
     fun partyProblem(): Int? {
         return Ramsey.searchBounds(cliqueSize = 3, colors = 2, maxVertices = 8)
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 8. TOPOLOGIA COMPUTACIONAL — INTERIOR, FECHO, FRONTEIRA
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Demonstrates topological operations (interior, closure, boundary) on a finite topology.
+     *
+     * @return A [Triple] of (interior, closure, boundary) of the set {2, 3} in
+     *         the topology on {1, 2, 3, 4}.
+     */
     fun topologyAnalysis(): Triple<MathSet<Int>, MathSet<Int>, MathSet<Int>> {
         val universe = mathSetOf(1, 2, 3, 4)
         val openSets: MathSet<MathSet<Int>> = mathSetOf(
@@ -211,10 +243,12 @@ object AdvancedUseCases {
         )
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 9. ORDINAIS — ARITMÉTICA NÃO COMUTATIVA + RECURSÃO TRANSFINITA
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Demonstrates that ordinal addition and multiplication are not commutative.
+     *
+     * @return A [Pair] where `first` indicates whether omega + 1 == 1 + omega (false)
+     *         and `second` indicates whether omega * 2 == 2 * omega (false).
+     */
     fun ordinalNonCommutativity(): Pair<Boolean, Boolean> {
         val omega = Ordinal.OMEGA
         val one = Ordinal.ONE
@@ -223,6 +257,11 @@ object AdvancedUseCases {
         return Pair(additionCommutes, multiplicationCommutes)
     }
 
+    /**
+     * Computes a sum via transfinite recursion up to the finite ordinal 10.
+     *
+     * @return The result of summing 1 at each successor step from 0 to 10 (i.e., 10).
+     */
     fun transfiniteSum(): Int {
         return TransfiniteRecursion.transfiniteRecursion(
             ordinal = Ordinal.finite(10),
@@ -232,18 +271,21 @@ object AdvancedUseCases {
         )
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 10. INDEPENDÊNCIA DA HIPÓTESE DO CONTÍNUO (ANÁLOGO FINITO)
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Demonstrates the independence of a finite analogue of the Continuum Hypothesis.
+     *
+     * @return A [Pair] where `first` is `true` (CH holds in model 1) and `second` is
+     *         `false` (CH fails in model 2).
+     */
     fun continuumHypothesisIndependence(): Pair<Boolean, Boolean> {
         return IndependenceDemo.summary()
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 11. VERIFICAÇÃO DE AXIOMAS ZFC SOBRE MINI-MODELO
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Verifies ZFC axioms on a mini finite model containing {empty, {1}, {2}, {1,2}}.
+     *
+     * @return A map from axiom names to whether they hold in the model.
+     */
     fun verifyZfcOnMiniModel(): Map<String, Boolean> {
         val empty = MathSet.empty<Int>()
         val s1 = mathSetOf(1)
@@ -255,10 +297,12 @@ object AdvancedUseCases {
         return ZFCVerifier.verify(model).byAxiom
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 12. CONSTRUÇÃO AXIOMÁTICA — √2 COMO SEQUÊNCIA DE CAUCHY
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Demonstrates the constructive definition of sqrt(2) as a Cauchy sequence of rationals.
+     *
+     * @return A [Pair] of the rational approximation (as string) and whether the sequence
+     *         satisfies the Cauchy criterion on a finite prefix.
+     */
     fun constructiveSqrt2(): Pair<String, Boolean> {
         val sqrt2 = ConstructedReal.squareRootOf(2)
         val isCauchy = sqrt2.isCauchyOnFinitePrefix(10)
@@ -266,10 +310,11 @@ object AdvancedUseCases {
         return Pair(approx.toString(), isCauchy)
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 13. BIJEÇÃO CONSTRUTIVA ℕ ↔ ℚ — ENUMERABILIDADE
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Enumerates the first 10 rationals in the constructive N -> Q bijection.
+     *
+     * @return A list of strings "i -> q" for i in 0..9.
+     */
     fun rationalEnumeration(): List<String> {
         return (0..9).map { i ->
             val n = NaturalNumber.of(i)
@@ -278,20 +323,22 @@ object AdvancedUseCases {
         }
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 14. BELL NUMBERS — CONTAR PARTIÇÕES DE CONJUNTOS
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Computes Bell numbers B(0) through B(5), demonstrating partition counting.
+     *
+     * @return A list of pairs (n, B(n) as string) for n in 0..5.
+     */
     fun bellNumbersDemo(): List<Pair<Int, String>> {
         return (0..5).map { n ->
             n to PartitionCalculus.bellNumber(n).toString()
         }
     }
 
-    // ─────────────────────────────────────────────────────────
-    // 15. POSETS E FILTROS — MODELO DE PREFERÊNCIAS
-    // ─────────────────────────────────────────────────────────
-
+    /**
+     * Counts the number of filters on a 3-element poset (preference model).
+     *
+     * @return The number of filters in the poset A <= B <= C.
+     */
     fun preferenceFilters(): Int {
         val options = setOf("A", "B", "C")
         val poset = Poset(options) { a, b ->
