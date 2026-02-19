@@ -459,3 +459,117 @@ Início da Implementação (Sprint 1: Kernel). Setup do projeto (scaffolding de 
 ### Observacoes
 
 - Esta entrega cobre o nucleo minimo de Fase E para categorias (gate de consistencia de funtores) e prepara extensoes futuras para Yoneda/Adjuncao.
+
+---
+
+## Atualizacao de Sessao (2026-02-19 - Wave 1 Fase E: TypeTheory + Computability + ModelTheory)
+
+- **Nivel:** Deliberado
+- **Resumo:** Continuidade da Wave 1 com implementacao dos modulos `typetheory`, `computability` e `modeltheory`, fechando o gate minimo de meta-foundations definido no plano de execucao.
+
+### Entregas Realizadas
+
+- **Novo modulo `typetheory/`:**
+  - `typetheory/build.gradle.kts`
+  - `typetheory/README.md`
+  - `typetheory/src/commonMain/kotlin/mathsets/typetheory/Syntax.kt`
+  - `typetheory/src/commonMain/kotlin/mathsets/typetheory/Evaluator.kt`
+  - `typetheory/src/commonMain/kotlin/mathsets/typetheory/TypeChecker.kt`
+  - `typetheory/src/commonMain/kotlin/mathsets/typetheory/CurryHoward.kt`
+  - `typetheory/src/commonTest/kotlin/mathsets/typetheory/TypeTheoryTest.kt`
+  - Escopo entregue: `Type` e `Term` (subset MLTT), reducao beta + `NatRec`, type checker bidirecional e utilitarios Curry-Howard.
+
+- **Novo modulo `computability/`:**
+  - `computability/build.gradle.kts`
+  - `computability/README.md`
+  - `computability/src/commonMain/kotlin/mathsets/computability/TuringMachine.kt`
+  - `computability/src/commonMain/kotlin/mathsets/computability/LambdaCalculus.kt`
+  - `computability/src/commonTest/kotlin/mathsets/computability/ComputabilityTest.kt`
+  - Escopo entregue: modelo de maquina de Turing deterministico com simulacao bounded, lambda-calculo untyped (normal/applicative order), numerais de Church e nota expositiva sobre indecidibilidade da parada.
+
+- **Novo modulo `modeltheory/`:**
+  - `modeltheory/build.gradle.kts`
+  - `modeltheory/README.md`
+  - `modeltheory/src/commonMain/kotlin/mathsets/modeltheory/ModelTheory.kt`
+  - `modeltheory/src/commonTest/kotlin/mathsets/modeltheory/ModelTheoryTest.kt`
+  - Escopo entregue: `Signature`, `Structure`, `Satisfaction (M |= phi)` reutilizando AST de `logic/`, mais `ElementaryEquivalence` e verificador finito de `Embedding`.
+
+- **Registro de modulos no build:**
+  - Atualizado `settings.gradle.kts` com:
+    - `include(":typetheory")`
+    - `include(":computability")`
+    - `include(":modeltheory")`
+
+### Validacao Executada
+
+- `:typetheory:jvmTest --no-daemon --console=plain`
+- `:computability:jvmTest --no-daemon --console=plain`
+- `:modeltheory:jvmTest --no-daemon --console=plain`
+- `jvmTest --no-daemon --console=plain` (suite JVM completa com todos os modulos)
+
+### Observacoes
+
+- Com esta entrega, os modulos alvo da Wave 1 listados no plano (`algebra`, `polynomial`, `category`, `typetheory`, `computability`, `modeltheory`) estao implementados no repositorio.
+- Proximo passo recomendado no planejamento: baseline/review de design da Wave 1 e sequenciamento para Wave 2 (Fase B: aprofundamento de construcao de R/C + `analysis`).
+
+---
+
+## Atualizacao de Sessao (2026-02-19 - Wave 2 Inicio: Construction Real/Complex + Analysis Base)
+
+- **Nivel:** Deliberado
+- **Resumo:** Execucao dos proximos passos 1 -> 2 conforme planejamento: aprofundamento de `construction/real` e `construction/complex`, seguido de criacao do modulo `analysis` com nucleo de sequencias, limites, continuidade, derivacao e integral.
+
+### Entregas Realizadas
+
+- **construction/real (Cauchy <-> Dedekind):**
+  - `construction/src/commonMain/kotlin/mathsets/construction/real/DedekindReal.kt`
+  - Adicionados:
+    - `CauchyReal`
+    - `DedekindCut`
+    - `DedekindReal`
+    - `RealIsomorphism` (Cauchy -> Dedekind -> Cauchy)
+    - `DedekindRealArithmetic`
+    - extensoes `toDedekindReal()` / `toCauchyReal()`
+
+- **construction/complex (extensao):**
+  - `construction/src/commonMain/kotlin/mathsets/construction/complex/RootsOfUnity.kt`
+  - Adicionados:
+    - `RealComplexEmbedding`
+    - `RootsOfUnity` (`zeta`, `all`, `verifyEquation`)
+
+- **Novo modulo `analysis/`:**
+  - Registro em `settings.gradle.kts`: `include(":analysis")`
+  - `analysis/build.gradle.kts`
+  - `analysis/README.md`
+  - `analysis/src/commonMain/kotlin/mathsets/analysis/RealAnalysis.kt`
+  - Escopo entregue:
+    - `Limit` (`Converges`, `Diverges`, `Unknown`)
+    - `RealSequence` (+ `partialSum`, `convergence`)
+    - `Limits.atPoint`
+    - `Continuity.isContinuousAt`
+    - `Differentiation.derivativeAt`
+    - `RiemannIntegral.integrate` (midpoint rule)
+
+- **Testes adicionados:**
+  - `construction/src/commonTest/kotlin/mathsets/construction/real/DedekindRealTest.kt`
+  - `construction/src/commonTest/kotlin/mathsets/construction/complex/RootsOfUnityTest.kt`
+  - `analysis/src/commonTest/kotlin/mathsets/analysis/RealAnalysisTest.kt`
+  - Cobertura inclui:
+    - roundtrip Cauchy <-> Dedekind em amostras;
+    - verificacao de equacao para raizes da unidade;
+    - `lim 1/n = 0`;
+    - aproximacao de `lim (1 + 1/n)^n ~ e`;
+    - continuidade de polinomio;
+    - derivada numerica de `x^3`;
+    - integral de Riemann de `x^2` em `[0,1]`.
+
+### Validacao Executada
+
+- `:construction:jvmTest --no-daemon --console=plain`
+- `:analysis:jvmTest --no-daemon --console=plain`
+- `jvmTest --no-daemon --console=plain` (suite JVM completa)
+
+### Observacoes
+
+- Persistem mensagens de fallback do Kotlin daemon para compilacao (cache incremental), mas as tasks finalizaram com sucesso apos fallback automatico, sem impacto funcional.
+- Wave 2 foi iniciada com o nucleo de `analysis`; proximo incremento pode cobrir series, funcoes elementares (`exp/log/sin/cos`) e espacos metricos/normados (Sprint 32).
