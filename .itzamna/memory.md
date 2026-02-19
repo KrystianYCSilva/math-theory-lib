@@ -355,3 +355,107 @@ Início da Implementação (Sprint 1: Kernel). Setup do projeto (scaffolding de 
 
 - `:construction:jvmTest :construction:compileKotlinJs`
 - `:examples:jvmTest :examples:compileKotlinJs`
+
+---
+
+## Atualizacao de Sessao (2026-02-19 - Expansion Sprint 25-26: Modulos e Espacos Vetoriais)
+
+- **Nivel:** Deliberado
+- **Resumo:** Continuidade da Wave 1/Fase A apos Sprint 24, com implementacao do bloco de Sprint 25-26 no modulo `algebra` (Module/VectorSpace/LinearMap/ExactSequence/TensorProduct), incluindo testes de aceite centrais.
+
+### Entregas Realizadas
+
+- **algebra/module (novo pacote):**
+  - `algebra/src/commonMain/kotlin/mathsets/algebra/module/ModuleTheory.kt`
+  - Interfaces e estruturas adicionadas:
+    - `Module<R, M>`
+    - `VectorSpace<K, V>`
+    - `Algebra<K, A>`
+    - `Vector<K>`
+    - `Basis<K>`
+    - `FiniteDimensionalVectorSpace<K>`
+    - `Submodule<R, M>`
+    - `LinearMap<K, V, W>`
+    - `FiniteDimensionalLinearMap<K>` (rank/nullity/composicao)
+    - `ExactSequence<K>` e `ShortExactSequence<K>`
+    - `Tensor<R, M, N>` e `TensorProduct<R, M, N>`
+
+- **README atualizado:**
+  - `algebra/README.md` com nova secao "Module and Linear Structures".
+
+- **Testes (aceite Sprint 25-26):**
+  - `algebra/src/commonTest/kotlin/mathsets/algebra/module/ModuleTheoryTest.kt`
+  - Cobertura:
+    - base canonica de Q^3;
+    - teorema posto-nulidade (rank-nullity) em mapa Q^3 -> Q^2;
+    - sequencia exata curta 0 -> Q -> Q^2 -> Q -> 0;
+    - validacao de submodulo sobre GF(2);
+    - operacoes basicas em tensor formal.
+
+### Validacao Executada
+
+- `:algebra:jvmTest --no-daemon --console=plain`
+- `jvmTest --no-daemon --console=plain` (suite JVM completa do repositorio)
+
+### Observacoes
+
+- O critico de aceite para Sprint 25-26 (base canonica Q^3 e posto-nulidade) foi coberto em testes automatizados.
+- A trilha de Wave 1 segue apta para continuar em paralelo com Fase E (`category`, `typetheory`, `computability`, `modeltheory`).
+
+---
+
+## Atualizacao de Sessao (2026-02-19 - Wave 1 Fase E: Category Core)
+
+- **Nivel:** Deliberado
+- **Resumo:** Inicio da Fase E (meta-foundations) com implementacao do modulo `category` e verificacoes de leis basicas de categorias/funtores.
+
+### Entregas Realizadas
+
+- **Novo modulo `category/`:**
+  - `category/build.gradle.kts`
+  - `category/README.md`
+  - Registro em `settings.gradle.kts` (`include(":category")`)
+
+- **Core categorico:**
+  - `category/src/commonMain/kotlin/mathsets/category/CategoryCore.kt`
+  - Adicionados:
+    - `Morphism<Obj>`
+    - `Category<Obj, Mor>`
+    - `Isomorphism`
+    - `CategoryLaws` (identidade/associatividade em amostras finitas)
+    - `OppositeCategory` + `OppositeMorphism`
+    - `ProductCategory` + `ProductObject` + `ProductMorphism`
+
+- **Funtores e transformacoes naturais:**
+  - `category/src/commonMain/kotlin/mathsets/category/Functor.kt`
+  - Adicionados:
+    - `Functor`
+    - `IdentityFunctor`
+    - `ComposedFunctor`
+    - `NaturalTransformation`
+    - `FunctorLaws` (preservacao de identidade/composicao)
+
+- **Categorias concretas finitas:**
+  - `category/src/commonMain/kotlin/mathsets/category/FiniteCategories.kt`
+  - Adicionados:
+    - `FinSetObject`, `FinSetMorphism`, `FinSetCategory`
+    - `FinGroupObject`, `FinGroupMorphism`, `FinGroupCategory` (grupos finitos baseados em `Int`)
+    - `ForgetfulFinGroupToFinSet`
+
+- **Testes:**
+  - `category/src/commonTest/kotlin/mathsets/category/CategoryCoreTest.kt`
+  - Cobertura:
+    - leis de categoria em `FinSet`;
+    - associatividade de composicao de funtores em amostras;
+    - naturalidade de transformacao natural (Id => Constante);
+    - preservacao de identidade/composicao pelo functor de esquecimento `FinGroup -> FinSet`;
+    - comportamento do `OppositeCategory`.
+
+### Validacao Executada
+
+- `:category:jvmTest --no-daemon --console=plain`
+- `jvmTest --no-daemon --console=plain` (suite JVM completa)
+
+### Observacoes
+
+- Esta entrega cobre o nucleo minimo de Fase E para categorias (gate de consistencia de funtores) e prepara extensoes futuras para Yoneda/Adjuncao.
