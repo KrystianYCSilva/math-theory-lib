@@ -1,3 +1,8 @@
+---
+description: "Documentação para algebra"
+use_when: "When you need information about algebra"
+---
+
 # algebra
 
 Abstract algebra: groups, rings, fields, and their instances.

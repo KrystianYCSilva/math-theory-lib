@@ -1,3 +1,8 @@
+---
+description: "Documentação para examples"
+use_when: "When you need information about examples"
+---
+
 # examples
 
 Comprehensive examples demonstrating the math-theory-lib across basic, advanced, and commercial use cases.

@@ -1,3 +1,8 @@
+---
+description: "Documentação para typetheory"
+use_when: "When you need information about typetheory"
+---
+
 # typetheory
 
 Minimal MLTT-style type theory core for Wave 1 (Phase E).

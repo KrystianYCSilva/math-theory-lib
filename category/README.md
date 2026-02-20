@@ -1,3 +1,8 @@
+---
+description: "Documentação para category"
+use_when: "When you need information about category"
+---
+
 # category
 
 Category-theory foundations for `mathsets-kt` Wave 1 (Phase E).

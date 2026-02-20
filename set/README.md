@@ -1,3 +1,8 @@
+---
+description: "Documentação para set — Layer 2: Set Theory"
+use_when: "When you need information about set — Layer 2: Set Theory"
+---
+
 # set — Layer 2: Set Theory
 
 The `set` module provides a computational implementation of axiomatic set theory built on

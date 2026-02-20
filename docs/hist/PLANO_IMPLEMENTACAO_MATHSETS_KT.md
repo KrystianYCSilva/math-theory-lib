@@ -1,3 +1,8 @@
+---
+description: "Documentação para Plano de Implementação: `mathsets-kt`"
+use_when: "When you need information about Plano de Implementação: `mathsets-kt`"
+---
+
 # Plano de Implementação: `mathsets-kt`
 
 ## Biblioteca Kotlin para Teoria dos Conjuntos e Teoria dos Números

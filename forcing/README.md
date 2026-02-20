@@ -1,3 +1,8 @@
+---
+description: "Documentação para forcing"
+use_when: "When you need information about forcing"
+---
+
 # forcing
 
 Posets, generic filters, forcing extensions, and CH independence demonstration.

@@ -1,9 +1,14 @@
+---
+description: "Arquitetura técnica, decisões de design e estrutura de módulos do mathsets-kt"
+use_when: "When needing to understand the architectural design, module structure, and core technical decisions (e.g. Dual Mode, Immutability) of the project"
+---
+
 # ARCHITECTURE.md — `mathsets-kt`
 
 ## Arquitetura da Biblioteca Kotlin para Teoria dos Conjuntos e Teoria dos Números
 
-**Versão:** 1.0.0-draft  
-**Última atualização:** 2026-02-14  
+**Versão:** 1.0.0
+**Última atualização:** 2026-02-20  
 **Autores:** [Seu nome]  
 **Licença:** [A definir]
 

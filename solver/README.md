@@ -1,3 +1,8 @@
+---
+description: "Documentação para solver"
+use_when: "When you need information about solver"
+---
+
 # solver
 
 SAT/SMT solvers and verification tools for Wave 4.

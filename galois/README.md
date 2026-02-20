@@ -1,3 +1,8 @@
+---
+description: "Documentação para galois"
+use_when: "When you need information about galois"
+---
+
 # galois
 
 Galois theory and field extensions for `mathsets-kt`.

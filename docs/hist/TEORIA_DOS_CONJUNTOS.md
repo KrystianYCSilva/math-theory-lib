@@ -1,3 +1,8 @@
+---
+description: "Documentação para Teoria dos Conjuntos: Fundamentos e Implementação Computacional em C"
+use_when: "When you need information about Teoria dos Conjuntos: Fundamentos e Implementação Computacional em C"
+---
+
 # Teoria dos Conjuntos: Fundamentos e Implementação Computacional em C
 
 ## Visão Geral

@@ -1,7 +1,12 @@
+---
+description: "Plano de Execução Estratégica (Execution Waves) para implementar a expansão v2.0 do mathsets-kt"
+use_when: "When preparing to implement a new expansion module and needing to know the execution order (Waves), criteria, and risks"
+---
+
 # EXPANSION_EXECUTION_PLAN.md — `mathsets-kt`
 
-**Versão:** 1.0.0-draft  
-**Data:** 2026-02-17  
+**Versão:** 2.0.0
+**Data:** 2026-02-20  
 **Base documental:** `docs/expanding-mathsets-kt.md` + `docs/EXPANSION_ROADMAP.md`  
 **Escopo deste documento:** planejamento de execução (sem implementação)
 

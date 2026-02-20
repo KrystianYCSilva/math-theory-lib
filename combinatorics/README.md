@@ -1,3 +1,8 @@
+---
+description: "Documentação para combinatorics"
+use_when: "When you need information about combinatorics"
+---
+
 # combinatorics
 
 Set partitions, Ramsey theory, and Gale-Stewart games.

@@ -1,3 +1,8 @@
+---
+description: "Documentação para MEMORY.md"
+use_when: "When you need information about MEMORY.md"
+---
+
 ### Sprint 1: Kernel - Tipos Numéricos Primitivos
 - **Data:** 2026-02-14
 - **Arquivos:** `NaturalNumber.kt`, `IntegerNumber.kt`, `RationalNumber.kt`, `Cardinality.kt`, `BigInteger.kt` (Platform abstractions)

@@ -1,3 +1,8 @@
+---
+description: "Documentação para polynomial"
+use_when: "When you need information about polynomial"
+---
+
 # polynomial
 
 Univariate polynomial rings with arithmetic, Euclidean division, and GCD.

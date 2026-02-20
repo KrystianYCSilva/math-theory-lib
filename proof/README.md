@@ -1,3 +1,8 @@
+---
+description: "Documentação para proof"
+use_when: "When you need information about proof"
+---
+
 # proof
 
 Proof objects and verification for Wave 4.

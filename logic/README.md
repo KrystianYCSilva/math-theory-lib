@@ -1,3 +1,8 @@
+---
+description: "Documentação para logic — Layer 1: Logical Specifications"
+use_when: "When you need information about logic — Layer 1: Logical Specifications"
+---
+
 # logic — Layer 1: Logical Specifications
 
 The `logic` module provides a first-order logic framework for expressing, parsing, printing, and model-checking mathematical formulas. It sits at **Layer 1** of the architecture, above the `kernel` (Layer 0) and below the `construction` layer, serving as the formal language in which axioms and theorems are stated.

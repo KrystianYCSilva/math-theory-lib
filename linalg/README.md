@@ -1,3 +1,8 @@
+---
+description: "Documentação para linalg"
+use_when: "When you need information about linalg"
+---
+
 # linalg
 
 Linear algebra foundations for Wave 3.

@@ -1,9 +1,14 @@
+---
+description: "Roadmap de Expansão (v2.0) cobrindo Fases A-G (Álgebra, Análise, Teoria dos Tipos, Solvers, etc.)"
+use_when: "When checking the advanced roadmap phases, cross-module dependencies, and high-level milestones for mathsets-kt expansion"
+---
+
 # EXPANSION_ROADMAP.md — `mathsets-kt`
 
 ## Roadmap de Expansão: De Teoria dos Conjuntos a Plataforma Matemática Completa
 
-**Versão:** 2.0.0-draft  
-**Última atualização:** 2026-02-17  
+**Versão:** 2.0.0
+**Última atualização:** 2026-02-20  
 **Pré-requisito:** Conclusão do ROADMAP.md v1.0 (Sprints 1–20)
 
 ---

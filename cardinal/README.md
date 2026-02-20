@@ -1,3 +1,8 @@
+---
+description: "Documentação para cardinal"
+use_when: "When you need information about cardinal"
+---
+
 # cardinal
 
 Countability proofs, Cantor's diagonal argument, cardinal arithmetic, and the Continuum Hypothesis.

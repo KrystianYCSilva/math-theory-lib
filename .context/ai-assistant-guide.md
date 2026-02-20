@@ -7,7 +7,7 @@ description: |
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a Kotlin Multiplatform library (`mathsets-kt`) organized by domain modules. Active modules today are `kernel/`, `set/`, and `relation/`; other modules listed in `settings.gradle.kts` are scaffolds for planned layers (`logic`, `construction`, `ordinal`, etc.).
+This repository is a Kotlin Multiplatform library (`mathsets-kt`) organized by domain modules. The project has completed Wave 4 and all core modules are fully active (`kernel`, `logic`, `set`, `relation`, `function`, `construction`, `algebra`, `analysis`, etc.).
 
 Code follows the standard KMP layout:
 - Main code: `<module>/src/commonMain/kotlin/mathsets/...`
@@ -15,6 +15,7 @@ Code follows the standard KMP layout:
 - Platform code (when needed): `kernel/src/jvmMain`, `kernel/src/jsMain`, `kernel/src/nativeMain`
 
 Architecture and theory notes live in `docs/` (especially `docs/ARCHITECTURE.md`).
+Project context and metadata reside in `.context/`.
 
 ## Build, Test, and Development Commands
 Use the Gradle wrapper from repo root.
@@ -41,7 +42,7 @@ Tests use Kotlin Test + Kotest (`FunSpec`, matchers, and property testing suppor
 - Place tests under each module’s `commonTest`.
 - Name files `*Test.kt` (example: `SetAlgebraPropertiesTest.kt`).
 - Add property-style tests for algebraic laws when adding operations.
-- No enforced coverage threshold is configured yet; new behavior should include targeted tests.
+- Ensure isomorphism checks between "Kernel" and "Construction" representations.
 
 ## Commit & Pull Request Guidelines
 Current history uses short, direct subjects (e.g., `Primeiro Commit`), with mixed Portuguese/English. Keep commits focused and descriptive, ideally one logical change per commit.

@@ -1,3 +1,8 @@
+---
+description: "Documento de pesquisa e visão estratégica detalhando a expansão do mathsets-kt"
+use_when: "When needing high-level strategic context, comparison with other math libraries (Mathlib, SymPy, KMath), and the rationale behind the expansion phases"
+---
+
 # Expanding mathsets-kt into a comprehensive mathematical library
 
 **The most strategic path forward for mathsets-kt is to build an algebraic hierarchy (groups → rings → fields) as the immediate next layer, then construct ℝ via Cauchy sequences, and leverage the Isabelle→Scala→Kotlin pipeline for verified code—all while following Mathlib's typeclass-based module organization as the gold-standard architectural reference.** This expansion would fill the largest gap in the Kotlin ecosystem: no library currently covers pure mathematics with formal rigor. The library's existing ZFC foundation and number constructions (ℕ, ℤ, ℚ) position it uniquely to grow "upward" through abstract algebra and analysis while also extending "downward" into category theory and model theory. What follows is a detailed research synthesis across existing ecosystems, foundational and applied math areas, proof assistant integration, and architecture patterns.

@@ -1,3 +1,8 @@
+---
+description: "Documentação para Function Module"
+use_when: "When you need information about Function Module"
+---
+
 # Function Module
 
 The `function` module models mathematical functions as first-class objects with domain and codomain validation, classification by injectivity/surjectivity, and support for the Axiom of Choice.

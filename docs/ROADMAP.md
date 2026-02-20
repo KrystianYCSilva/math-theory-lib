@@ -1,9 +1,14 @@
+---
+description: "Roadmap de implementação da fundação do mathsets-kt (Sprints 1-20)"
+use_when: "When checking the foundational implementation phases, milestones, and dependencies of the core mathematical library"
+---
+
 # ROADMAP.md — `mathsets-kt`
 
 ## Roadmap de Implementação
 
-**Versão:** 1.0.0-draft  
-**Última atualização:** 2026-02-14
+**Versão:** 1.0.0
+**Última atualização:** 2026-02-20
 
 ---
 

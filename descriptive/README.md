@@ -1,3 +1,8 @@
+---
+description: "Documentação para descriptive"
+use_when: "When you need information about descriptive"
+---
+
 # descriptive
 
 Finite topology and Borel hierarchy classification.

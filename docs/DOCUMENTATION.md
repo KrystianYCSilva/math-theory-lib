@@ -1,9 +1,14 @@
+---
+description: "Documentação técnica e teórica do mathsets-kt"
+use_when: "When needing detailed mathematical and technical documentation about Axiomatic Set Theory (ZFC), Logic, Numbers construction, and more"
+---
+
 # DOCUMENTATION.md — `mathsets-kt`
 
 ## Documentação Técnica e Teórica
 
-**Versão:** 1.0.0-draft  
-**Última atualização:** 2026-02-14
+**Versão:** 1.0.0
+**Última atualização:** 2026-02-20
 
 ---
 

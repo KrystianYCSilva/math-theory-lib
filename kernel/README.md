@@ -1,3 +1,8 @@
+---
+description: "Documentação para kernel — Layer 0: Computational Primitives"
+use_when: "When you need information about kernel — Layer 0: Computational Primitives"
+---
+
 # kernel — Layer 0: Computational Primitives
 
 The `kernel` module is the foundational layer of **mathsets-kt**. It provides arbitrary-precision number types, arithmetic abstractions, predicate combinators, lazy generators, and analysis primitives that all higher layers (sets, relations, ordinals, etc.) build upon.

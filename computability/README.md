@@ -1,3 +1,8 @@
+---
+description: "Documentação para computability"
+use_when: "When you need information about computability"
+---
+
 # computability
 
 Computability foundations for Wave 1 (Phase E).

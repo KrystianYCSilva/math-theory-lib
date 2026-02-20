@@ -1,3 +1,8 @@
+---
+description: "Documentação para construction — Layer 3: Axiomatic Construction of Number Systems"
+use_when: "When you need information about construction — Layer 3: Axiomatic Construction of Number Systems"
+---
+
 # construction — Layer 3: Axiomatic Construction of Number Systems
 
 This module provides rigorous, set-theoretic constructions of the classical number systems, building each layer from the one below:

@@ -1,3 +1,8 @@
+---
+description: "Documentação para Relation Module"
+use_when: "When you need information about Relation Module"
+---
+
 # Relation Module
 
 The `relation` module provides a rigorous, set-theoretic implementation of binary relations and their classical properties. All constructions follow standard ZFC definitions.

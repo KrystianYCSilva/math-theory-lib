@@ -1,3 +1,8 @@
+---
+description: "Documentação para ordinal"
+use_when: "When you need information about ordinal"
+---
+
 # ordinal
 
 Ordinal numbers, Cantor Normal Form, arithmetic, and transfinite recursion.
