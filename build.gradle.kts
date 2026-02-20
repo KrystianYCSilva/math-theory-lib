@@ -14,6 +14,7 @@ allprojects {
 }
 
 subprojects {
+    apply(plugin = "maven-publish")
     apply(plugin = "io.gitlab.arturbosch.detekt")
     
     detekt {
