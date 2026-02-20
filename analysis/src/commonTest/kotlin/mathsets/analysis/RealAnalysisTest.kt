@@ -55,4 +55,29 @@ class RealAnalysisTest : FunSpec({
 
         ((integral - expected).abs() < RealNumber.parse("0.005")) shouldBe true
     }
+
+    test("darboux upper and lower sums for x^2 converge") {
+        val square = { x: RealNumber -> x * x }
+        val lower = RiemannIntegral.lowerSum(square, RealNumber.ZERO, RealNumber.ONE, partitions = 4_000)
+        val upper = RiemannIntegral.upperSum(square, RealNumber.ZERO, RealNumber.ONE, partitions = 4_000)
+        val expected = RealNumber.parse("0.3333333")
+
+        ((lower - expected).abs() < RealNumber.parse("0.01")) shouldBe true
+        ((upper - expected).abs() < RealNumber.parse("0.01")) shouldBe true
+        (upper >= lower) shouldBe true
+        RiemannIntegral.isIntegrable(square, RealNumber.ZERO, RealNumber.ONE, tolerance = RealNumber.parse("0.002")) shouldBe true
+    }
+
+    test("limsup and liminf for alternating sequence are near 1 and -1") {
+        val sequence = RealSequence { n ->
+            val sign = if (n % 2 == 0) RealNumber.of(-1) else RealNumber.ONE
+            sign + (RealNumber.ONE / RealNumber.of(n))
+        }
+
+        val limsup = sequence.limsup(maxN = 20_000, window = 300)
+        val liminf = sequence.liminf(maxN = 20_000, window = 300)
+
+        ((limsup - RealNumber.ONE).abs() < RealNumber.parse("0.01")) shouldBe true
+        ((liminf - RealNumber.of(-1)).abs() < RealNumber.parse("0.01")) shouldBe true
+    }
 })

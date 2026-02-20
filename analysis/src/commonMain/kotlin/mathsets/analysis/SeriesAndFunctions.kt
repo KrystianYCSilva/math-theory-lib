@@ -3,6 +3,15 @@ package mathsets.analysis
 import mathsets.kernel.RealNumber
 
 /**
+ * Outcome of a classical convergence test for a series.
+ */
+enum class SeriesConvergenceResult {
+    Converges,
+    Diverges,
+    Inconclusive
+}
+
+/**
  * Finite power-series representation `sum c_n x^n`.
  *
  * @property coefficients Coefficients in ascending degree order.
@@ -89,6 +98,124 @@ object Series {
     }
 
     /**
+     * Checks absolute convergence by applying convergence to `|a_n|`.
+     */
+    fun isAbsolutelyConvergent(
+        sequence: RealSequence,
+        tolerance: RealNumber = RealNumber.parse("0.001"),
+        maxN: Int = 20_000,
+        window: Int = 120
+    ): Boolean {
+        val absolute = RealSequence { n -> sequence.term(n).abs() }
+        return approximateInfiniteSum(absolute, tolerance, maxN, window) is Limit.Converges
+    }
+
+    /**
+     * Ratio test based on sampled ratios `|a_{n+1}/a_n|`.
+     */
+    fun ratioTest(
+        sequence: RealSequence,
+        startN: Int = 40,
+        samples: Int = 220,
+        margin: RealNumber = RealNumber.parse("0.02"),
+        zeroTolerance: RealNumber = RealNumber.parse("0.0000000001")
+    ): SeriesConvergenceResult {
+        require(startN >= 1 && samples >= 2) { "Require startN >= 1 and samples >= 2." }
+
+        val ratios = mutableListOf<RealNumber>()
+        for (n in startN until startN + samples) {
+            val current = sequence.term(n).abs()
+            val next = sequence.term(n + 1).abs()
+            if (current <= zeroTolerance) continue
+            ratios += next / current
+        }
+        if (ratios.isEmpty()) return SeriesConvergenceResult.Inconclusive
+
+        val maxRatio = ratios.maxOrNull() ?: return SeriesConvergenceResult.Inconclusive
+        val minRatio = ratios.minOrNull() ?: return SeriesConvergenceResult.Inconclusive
+
+        return when {
+            maxRatio < RealNumber.ONE - margin -> SeriesConvergenceResult.Converges
+            minRatio > RealNumber.ONE + margin -> SeriesConvergenceResult.Diverges
+            else -> SeriesConvergenceResult.Inconclusive
+        }
+    }
+
+    /**
+     * Root test based on sampled values `|a_n|^(1/n)`.
+     */
+    fun rootTest(
+        sequence: RealSequence,
+        startN: Int = 40,
+        samples: Int = 220,
+        margin: RealNumber = RealNumber.parse("0.02")
+    ): SeriesConvergenceResult {
+        require(startN >= 1 && samples >= 2) { "Require startN >= 1 and samples >= 2." }
+
+        val roots = mutableListOf<RealNumber>()
+        for (n in startN until startN + samples) {
+            val absTerm = sequence.term(n).abs()
+            val root = if (absTerm == RealNumber.ZERO) {
+                RealNumber.ZERO
+            } else {
+                ElementaryFunctions.exp(
+                    ElementaryFunctions.naturalLog(absTerm) / RealNumber.of(n)
+                )
+            }
+            roots += root
+        }
+        if (roots.isEmpty()) return SeriesConvergenceResult.Inconclusive
+
+        val maxRoot = roots.maxOrNull() ?: return SeriesConvergenceResult.Inconclusive
+        val minRoot = roots.minOrNull() ?: return SeriesConvergenceResult.Inconclusive
+
+        return when {
+            maxRoot < RealNumber.ONE - margin -> SeriesConvergenceResult.Converges
+            minRoot > RealNumber.ONE + margin -> SeriesConvergenceResult.Diverges
+            else -> SeriesConvergenceResult.Inconclusive
+        }
+    }
+
+    /**
+     * Comparison test using sampled eventual inequalities for non-negative terms.
+     */
+    fun comparisonTest(
+        candidate: RealSequence,
+        reference: RealSequence,
+        referenceBehavior: SeriesConvergenceResult,
+        startN: Int = 40,
+        samples: Int = 220,
+        tolerance: RealNumber = RealNumber.parse("0.0000001")
+    ): SeriesConvergenceResult {
+        require(startN >= 1 && samples >= 2) { "Require startN >= 1 and samples >= 2." }
+
+        var candidateLeReference = true
+        var referenceLeCandidate = true
+
+        for (n in startN until startN + samples) {
+            val a = candidate.term(n)
+            val b = reference.term(n)
+            if (a < RealNumber.ZERO || b < RealNumber.ZERO) {
+                return SeriesConvergenceResult.Inconclusive
+            }
+            if (a > b + tolerance) candidateLeReference = false
+            if (b > a + tolerance) referenceLeCandidate = false
+        }
+
+        return when {
+            referenceBehavior == SeriesConvergenceResult.Converges && candidateLeReference -> {
+                SeriesConvergenceResult.Converges
+            }
+
+            referenceBehavior == SeriesConvergenceResult.Diverges && referenceLeCandidate -> {
+                SeriesConvergenceResult.Diverges
+            }
+
+            else -> SeriesConvergenceResult.Inconclusive
+        }
+    }
+
+    /**
      * Builds a geometric sequence `a*r^(n-1)`.
      *
      * @param first First term `a`.
@@ -162,6 +289,22 @@ object ElementaryFunctions {
             sum += sign * numerator / denominator
         }
         return sum
+    }
+
+    /**
+     * Hyperbolic sine approximation `sinh(x)`.
+     */
+    fun sinh(x: RealNumber, terms: Int = 40): RealNumber {
+        require(terms > 0) { "terms must be positive." }
+        return (exp(x, terms) - exp(-x, terms)) / RealNumber.TWO
+    }
+
+    /**
+     * Hyperbolic cosine approximation `cosh(x)`.
+     */
+    fun cosh(x: RealNumber, terms: Int = 40): RealNumber {
+        require(terms > 0) { "terms must be positive." }
+        return (exp(x, terms) + exp(-x, terms)) / RealNumber.TWO
     }
 
     /**

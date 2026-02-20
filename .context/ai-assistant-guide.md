@@ -1,3 +1,9 @@
+---
+description: |
+  System prompt and guidelines for AI assistants working on this project.
+  Use when: configuring a new AI assistant or understanding how the AI should behave.
+---
+
 # Repository Guidelines
 
 ## Project Structure & Module Organization

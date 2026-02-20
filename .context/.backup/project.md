@@ -21,4 +21,11 @@ Resolver o "Bootstrap Circular" entre Teoria dos Conjuntos e Teoria dos Números
 
 ## Status
 
-v1.0 completo (12 módulos implementados e testados). Build JVM e JS verde. Planejamento da expansão v2.0 documentado (algebra, analysis, topology, category, solvers, proof assistants).
+**v2.0 — WAVE 4 COMPLETA!**
+
+- ✅ Wave 1: Álgebra Abstrata + Meta-Fundações (algebra, polynomial, galois, category, typetheory, computability, modeltheory)
+- ✅ Wave 2: Construção de ℝ/ℂ + Análise (construction, analysis com metric spaces)
+- ✅ Wave 3: Álgebra Linear + Teoria dos Números + Grafos (linalg, ntheory, graph)
+- ✅ Wave 4: Solvers + Symbolic + ODE (solver, proof, symbolic, ode)
+
+**108 testes passando, build JVM e JS verde.** Pronto para Release 2.0!

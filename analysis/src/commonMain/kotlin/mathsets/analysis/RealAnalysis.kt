@@ -86,6 +86,32 @@ class RealSequence(private val generator: (Int) -> RealNumber) {
         val average = tail.fold(RealNumber.ZERO) { acc, v -> acc + v } / RealNumber.of(tail.size)
         return Limit.Converges(average)
     }
+
+    /**
+     * Approximates limsup(a_n) using a finite tail window.
+     *
+     * @param maxN Maximum sampled index.
+     * @param window Tail window size.
+     * @return Maximum value observed on sampled tail.
+     */
+    fun limsup(maxN: Int = 10_000, window: Int = 200): RealNumber {
+        require(maxN >= window && window >= 1) { "Require maxN >= window >= 1." }
+        val tail = (maxN - window + 1..maxN).map { term(it) }
+        return tail.maxOrNull() ?: RealNumber.ZERO
+    }
+
+    /**
+     * Approximates liminf(a_n) using a finite tail window.
+     *
+     * @param maxN Maximum sampled index.
+     * @param window Tail window size.
+     * @return Minimum value observed on sampled tail.
+     */
+    fun liminf(maxN: Int = 10_000, window: Int = 200): RealNumber {
+        require(maxN >= window && window >= 1) { "Require maxN >= window >= 1." }
+        val tail = (maxN - window + 1..maxN).map { term(it) }
+        return tail.minOrNull() ?: RealNumber.ZERO
+    }
 }
 
 /**
@@ -219,5 +245,69 @@ object RiemannIntegral {
             sum += f(midpoint)
         }
         return sum * width
+    }
+
+    /**
+     * Approximate lower Darboux sum using sampled minima per partition.
+     */
+    fun lowerSum(
+        f: (RealNumber) -> RealNumber,
+        a: RealNumber,
+        b: RealNumber,
+        partitions: Int = 4_000
+    ): RealNumber {
+        require(partitions > 0) { "partitions must be > 0." }
+        val width = (b - a) / RealNumber.of(partitions)
+        var sum = RealNumber.ZERO
+        for (i in 0 until partitions) {
+            val left = a + width * RealNumber.of(i)
+            val right = left + width
+            val mid = (left + right) / RealNumber.TWO
+            val q1 = (left + mid) / RealNumber.TWO
+            val q3 = (mid + right) / RealNumber.TWO
+            val values = listOf(f(left), f(q1), f(mid), f(q3), f(right))
+            val m = values.minOrNull() ?: RealNumber.ZERO
+            sum += m
+        }
+        return sum * width
+    }
+
+    /**
+     * Approximate upper Darboux sum using sampled maxima per partition.
+     */
+    fun upperSum(
+        f: (RealNumber) -> RealNumber,
+        a: RealNumber,
+        b: RealNumber,
+        partitions: Int = 4_000
+    ): RealNumber {
+        require(partitions > 0) { "partitions must be > 0." }
+        val width = (b - a) / RealNumber.of(partitions)
+        var sum = RealNumber.ZERO
+        for (i in 0 until partitions) {
+            val left = a + width * RealNumber.of(i)
+            val right = left + width
+            val mid = (left + right) / RealNumber.TWO
+            val q1 = (left + mid) / RealNumber.TWO
+            val q3 = (mid + right) / RealNumber.TWO
+            val values = listOf(f(left), f(q1), f(mid), f(q3), f(right))
+            val m = values.maxOrNull() ?: RealNumber.ZERO
+            sum += m
+        }
+        return sum * width
+    }
+
+    /**
+     * Checks sampled Darboux integrability via upper-lower gap.
+     */
+    fun isIntegrable(
+        f: (RealNumber) -> RealNumber,
+        a: RealNumber,
+        b: RealNumber,
+        tolerance: RealNumber = RealNumber.parse("0.001"),
+        partitions: Int = 4_000
+    ): Boolean {
+        val gap = upperSum(f, a, b, partitions) - lowerSum(f, a, b, partitions)
+        return gap.abs() <= tolerance
     }
 }

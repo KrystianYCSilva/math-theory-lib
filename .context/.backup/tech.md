@@ -50,6 +50,21 @@ math-theory-lib/
 ├── descriptive/     # FiniteTopology, BorelHierarchy
 ├── combinatorics/   # PartitionCalculus, Ramsey, GaleStewartGame
 ├── forcing/         # Poset, GenericFilter, ForcingExtension, IndependenceDemo
+├── algebra/         # Hierarquia algébrica (Group, Ring, Field), módulos, Galois
+├── polynomial/      # Anéis de polinômios, divisão euclidiana, fatoração
+├── galois/          # Teoria de Galois, grupos de automorfismos
+├── category/        # Category, Functor, NaturalTransformation, Yoneda
+├── typetheory/      # MLTT, TypeChecker, Evaluator, CurryHoward
+├── computability/   # TuringMachine, LambdaCalculus, Church encoding
+├── modeltheory/     # Signature, Structure, Satisfaction, Compactness
+├── linalg/          # Matrix, GaussianElimination, Eigenvalue, Smith/Jordan Normal Form, SVD
+├── ntheory/         # ModularArithmetic, CRT, MillerRabin, PollardRho, EllipticCurve
+├── graph/           # Graph structures, BFS/DFS, Dijkstra, MST, MaxFlow, Matching
+├── analysis/        # Limit, Continuity, Differentiation, Integration, Series, Metric Spaces
+├── solver/          # SatSolver (DPLL), CnfFormula
+├── proof/           # Proof objects, ProofChecker, TheoremRegistry
+├── symbolic/        # Expression tree, Simplifier, Differentiator
+├── ode/             # EulerMethod, RungeKutta4, ODE systems
 └── examples/        # NumberConstructionDemo, ParadoxDemos, KernelAndSetUseCases
 ```
 
