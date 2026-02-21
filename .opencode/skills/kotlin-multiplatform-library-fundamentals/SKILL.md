@@ -1,6 +1,6 @@
 ---
 name: kotlin-multiplatform-library-fundamentals
-description: >-
+description: |
   Guides the creation of robust Kotlin Multiplatform (KMP) libraries with focus on API design and cross-platform compatibility.
   Use when: you need to create a new KMP module following best practices for JVM, iOS, and JS targets.
 ---

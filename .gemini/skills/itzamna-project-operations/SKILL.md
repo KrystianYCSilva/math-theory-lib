@@ -1,6 +1,6 @@
 ---
 name: itzamna-project-operations
-description: >-
+description: |
   Procedures and safe automation patterns for Itzamna in this repository.
   Use when: an automated agent needs to inspect, append, or propose changes to
   project-level agent artifacts (`.itzamna/`, `.context/`, CLI-generated files).

@@ -1,6 +1,6 @@
 ---
 name: set-theory-implementation-patterns
-description: >-
+description: |
   Provides patterns for the computational implementation of axiomatic set
   theory. Covers the "Dual Mode" pattern (efficient kernel vs. rigorous
   construction), lazy evaluation for infinite sets, and distinguishing

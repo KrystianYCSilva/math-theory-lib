@@ -1,6 +1,6 @@
 ---
 name: kotest-fundamentals
-description: >-
+description: |
   Guidelines for writing unit and property tests with Kotest in Kotlin multiplatform projects.
   Use when: you need to create FunSpec, StringSpec, or property-based tests with Kotest matchers.
 ---
