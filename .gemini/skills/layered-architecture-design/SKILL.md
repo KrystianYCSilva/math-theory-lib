@@ -3,7 +3,8 @@ name: layered-architecture-design
 description: >-
   A guide to designing software using a strict, multi-layered architecture with
   acyclic dependencies. This pattern enhances modularity, testability, and
-  maintainability by separating concerns into distinct layers.
+  maintainability by separating concerns into distinct layers. Use when: designing
+  module boundaries, resolving circular dependencies, or structuring a codebase.
 tags: [architecture, design-patterns, software-design, modularity]
 ---
 

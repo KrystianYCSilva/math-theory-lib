@@ -4,7 +4,8 @@ description: >-
   Provides patterns for the computational implementation of axiomatic set
   theory. Covers the "Dual Mode" pattern (efficient kernel vs. rigorous
   construction), lazy evaluation for infinite sets, and distinguishing
-  intensional from extensional sets.
+  intensional from extensional sets. Use when: implementing ZFC set theory,
+  infinite structures, or formal mathematical foundations in code.
 tags: [set-theory, computer-science, architecture, formal-methods, mathematics]
 ---
 

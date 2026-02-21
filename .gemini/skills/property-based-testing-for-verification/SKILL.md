@@ -3,7 +3,8 @@ name: property-based-testing-for-verification
 description: >-
   A guide to using property-based testing (PBT) to verify universal truths and
   algebraic properties in your code, effectively treating tests as theorem
-  provers. It covers writing property tests with Kotest.
+  provers. It covers writing property tests with Kotest. Use when: verifying
+  algebraic laws, mathematical theorems, or system invariants across all inputs.
 tags: [testing, quality, verification, kotlin, kotest, property-based-testing]
 ---
 

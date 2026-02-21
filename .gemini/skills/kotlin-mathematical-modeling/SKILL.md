@@ -4,7 +4,8 @@ description: >-
   A guide to using advanced Kotlin features for rigorous mathematical and
   logical modeling. Covers sealed types for closed universes, value classes for
   zero-cost type safety, immutability for correctness, and sequences for lazy
-  evaluation of infinite structures.
+  evaluation of infinite structures. Use when: you need to model mathematical
+  domains with type safety, immutability, and zero-overhead primitives.
 tags: [kotlin, dsl, architecture, type-safety, functional-programming]
 ---
 
