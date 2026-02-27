@@ -1,9 +1,16 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.benchmark)
 }
 
 kotlin {
     jvm()
+
+    linuxX64()
+    macosArm64()
+    macosX64()
+    mingwX64()
+
     js(IR) { browser(); nodejs() }
 
     sourceSets {
@@ -11,6 +18,7 @@ kotlin {
             dependencies {
                 implementation(project(":kernel"))
                 implementation(kotlin("stdlib"))
+                implementation(libs.kotlinx.benchmark.runtime)
             }
         }
         val commonTest by getting {
@@ -26,4 +34,10 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+benchmark {
+    targets {
+        register("jvm")
+    }
 }

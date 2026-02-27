@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.benchmark)
 }
 
 kotlin {
@@ -23,6 +24,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib"))
                 implementation(libs.bignum)
+                implementation(libs.kotlinx.benchmark.runtime)
             }
         }
         val commonTest by getting {
@@ -38,4 +40,10 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+benchmark {
+    targets {
+        register("jvm")
+    }
 }

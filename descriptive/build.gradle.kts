@@ -4,6 +4,12 @@ plugins {
 
 kotlin {
     jvm()
+
+    linuxX64()
+    macosArm64()
+    macosX64()
+    mingwX64()
+
     js(IR) { browser(); nodejs() }
 
     sourceSets {

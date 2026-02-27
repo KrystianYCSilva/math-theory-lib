@@ -8,9 +8,9 @@ use_when: "When needing to understand the architectural design, module structure
 ## Arquitetura da Biblioteca Kotlin para Teoria dos Conjuntos e Teoria dos Números
 
 **Versão:** 1.0.0
-**Última atualização:** 2026-02-20  
-**Autores:** [Seu nome]  
-**Licença:** [A definir]
+**Última atualização:** 2026-02-26  
+**Autores:** Krystian Yago C. Silva  
+**Licença:** MIT
 
 ---
 
