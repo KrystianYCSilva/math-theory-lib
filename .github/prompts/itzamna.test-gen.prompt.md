@@ -1,3 +1,0 @@
----
-agent: itzamna.test-gen
----
